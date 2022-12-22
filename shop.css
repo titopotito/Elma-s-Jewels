@@ -1,0 +1,128 @@
+#shop-section form {
+    display: flex;
+    justify-content: end;
+    padding-bottom: 2rem;
+    padding-right: 1rem;
+}
+
+#shop-section form select {
+    padding: 0.3rem;
+    color: #483434;
+}
+
+#shop-section form option {
+    padding: 0.3rem;
+    color: #483434;
+}
+
+#shop-section > ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#shop-section > ul img {
+    width: 18ch;
+}
+
+#shop-section > ul h3 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    max-width: 18ch;
+    word-wrap: break-word;
+}
+
+#shop-section > ul a:hover img {
+    opacity: 80%;
+}
+
+#shop-section > ul a:hover h3,
+#shop-section > ul a:hover data {
+    text-decoration: underline;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.pagination li a {
+    padding: 0.5rem 0.75rem;
+}
+
+.pagination li:hover a {
+    color: #483434;
+    background-color: #fff3e4;
+}
+
+@media screen and (min-width: 480px) {
+    #shop-section form {
+        padding-right: 2rem;
+    }
+
+    #shop-section > ul img {
+        width: 21ch;
+    }
+
+    #shop-section > ul h3 {
+        max-width: 21ch;
+    }
+
+    .pagination li a {
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #shop-section form {
+        padding-right: 3rem;
+    }
+
+    #shop-section > ul {
+        gap: 1.5rem;
+    }
+
+    #shop-section > ul img {
+        width: 27ch;
+    }
+
+    #shop-section > ul h3 {
+        max-width: 27ch;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+}
+
+@media screen and (min-width: 1280px) {
+    h2 {
+        font-size: 2.5rem;
+    }
+
+    #shop-section form {
+        padding-right: 5.5rem;
+    }
+
+    #shop-section form select {
+        width: 25ch;
+    }
+
+    #shop-section > ul {
+        gap: 2rem;
+    }
+
+    #shop-section > ul img {
+        width: 36ch;
+    }
+
+    #shop-section > ul h3 {
+        max-width: 36ch;
+    }
+
+    .pagination {
+        margin-top: 1.5rem;
+    }
+}
