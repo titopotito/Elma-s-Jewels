@@ -1,0 +1,39 @@
+#cart-section {
+    background-color: #fff3e4;
+    padding: 1rem;
+}
+
+#cart-section * {
+    color: black;
+}
+
+#cart-section li {
+    padding: 1rem 0;
+    display: flex;
+    gap: 0.5rem;
+}
+
+#cart-section img {
+    width: 10ch;
+    object-fit: cover;
+}
+
+#cart-section h3 {
+    font-size: medium;
+}
+
+#cart-section input {
+    width: 5ch;
+}
+
+#cart-section textarea {
+    display: flex;
+    justify-self: center;
+}
+
+#cart-section button {
+    padding: 0.25rem 0.5rem;
+    color: white;
+    background-color: #483434;
+    border: none;
+}

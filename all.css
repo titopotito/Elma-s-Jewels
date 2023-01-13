@@ -173,7 +173,7 @@ footer div {
 }
 
 /* Style all font awesome icons */
-.fa {
+footer .fa {
     margin: 0.25rem;
     padding: 15px;
     font-size: 22.5px;
@@ -185,20 +185,20 @@ footer div {
 }
 
 /* Add a hover effect if you want */
-.fa:hover {
+footer .fa:hover {
     opacity: 0.7;
 }
 
 /* Set a specific color for each brand */
 
 /* Facebook */
-.fa-facebook {
+footer .fa-facebook {
     background: #6b4f4f;
     color: white;
 }
 
 /* Twitter */
-.fa-twitter {
+footer .fa-twitter {
     background: #6b4f4f;
     color: white;
 }
