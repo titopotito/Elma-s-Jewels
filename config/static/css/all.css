@@ -54,7 +54,7 @@ nav div {
 }
 
 #banner {
-    background-image: url("images/others/martin-de-arriba-uf_IDewI6iQ-unsplash.jpg");
+    background-image: url("/static/images/others/martin-de-arriba-uf_IDewI6iQ-unsplash.jpg");
     background-size: cover;
     width: 100%;
     height: 30rem;

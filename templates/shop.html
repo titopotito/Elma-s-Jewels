@@ -1,0 +1,190 @@
+{% extends 'base.html' %} {% load static %}
+<!-- #### -->
+
+{% block extrahead %}
+<meta name="description" content="Collection of all jewelries in Elma's Jewels" />
+<link rel="stylesheet" href="{% static 'css/all.css' %}" />
+<link rel="stylesheet" href="{% static 'css/shop.css' %}" />
+<title>ELMA'S JEWELS | ALL JEWELRY</title>
+{% endblock %}
+<!-- #### -->
+
+{% block content %}
+<!-- #### -->
+{% include 'partials/header.html' %}
+<main id="shop-section">
+    <h2>ALL JEWELRY</h2>
+    <form action="">
+        <label for="sort-jewelry"></label>
+        <select name="sort-jewelry" id="sort-jewelry">
+            <option value="best-selling">Best Selling</option>
+            <option value="a-z">Alphabetical, A-Z</option>
+            <option value="z-a">Alphabetical, Z-A</option>
+            <option value="low-high">Price, low to high</option>
+            <option value="high-low">Price, high to low</option>
+            <option value="old-new">Date, old to new</option>
+            <option value="new-old">Date new to old</option>
+        </select>
+    </form>
+    <ul>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/rings/sabrianna-a9HPsYvWr-E-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>ALPHA GOLD RING</h3>
+                    <p><data value="130">$ 130</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/earrings/andrew-hutchings-Asngw4A5_tM-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>ANDREW EARRINGS</h3>
+                    <p><data value="130">$ 100</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/earrings/sabrianna-LRubu3f5yWM-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>SABRIANNA SILVER EARRINGS</h3>
+                    <p><data value="130">$ 150</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/rings/sabrianna-5vzRegjuBP4-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>SABRIANNA GOLD LEAF RING</h3>
+                    <p><data value="130">$ 180</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/rings/sabrianna-mmCm6c2ru5A-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>SAPPHIRE RING</h3>
+                    <p><data value="130">$ 100</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/necklaces/albany-capture-n89aymEuLAs-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>ALBANY GOLD NECKLACE</h3>
+                    <p><data value="130">$ 150</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/rings/sabrianna-a9HPsYvWr-E-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>ALPHA GOLD RING</h3>
+                    <p><data value="130">$ 130</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/earrings/andrew-hutchings-Asngw4A5_tM-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>ANDREW EARRINGS</h3>
+                    <p><data value="130">$ 100</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/earrings/sabrianna-LRubu3f5yWM-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>SABRIANNA SILVER EARRINGS</h3>
+                    <p><data value="130">$ 150</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/rings/sabrianna-5vzRegjuBP4-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>SABRIANNA GOLD LEAF RING</h3>
+                    <p><data value="130">$ 180</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/rings/sabrianna-mmCm6c2ru5A-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>SAPPHIRE RING</h3>
+                    <p><data value="130">$ 100</data></p>
+                </a>
+            </article>
+        </li>
+        <li>
+            <article>
+                <a href="">
+                    <img
+                        src="{% static 'images/necklaces/albany-capture-n89aymEuLAs-unsplash.jpg' %}"
+                        alt=""
+                    />
+                    <h3>ALBANY GOLD NECKLACE</h3>
+                    <p><data value="130">$ 150</data></p>
+                </a>
+            </article>
+        </li>
+    </ul>
+    <nav>
+        <ul class="pagination">
+            <li><a href="?page=1" rel="prev">&lt</a></li>
+
+            <li><a href="?page=1">1</a></li>
+
+            <li class="active"><a href="?page=2">2</a></li>
+            <li><a href="?page=3">3</a></li>
+
+            <li><a href="?page=3" rel="next">&gt</a></li>
+        </ul>
+    </nav>
+</main>
+{% include 'partials/footer.html' %}
+<!-- #### -->
+{% endblock %}
