@@ -18,10 +18,10 @@
     <ul id="cart-list">
         {% if cart_items|length > 0 %} {% for cart_item in cart_items %}
         <li>
-            <img src="{{ cart_item.product.image.url }}" alt="" />
+            <img src="{{ cart_item.jewelry.image.url }}" alt="" />
             <div>
-                <h3>{{ cart_item.product.name }}</h3>
-                <span>$ {{ cart_item.product.price }}</span> <br />
+                <h3>{{ cart_item.jewelry.name }}</h3>
+                <span>$ {{ cart_item.jewelry.price }}</span> <br />
                 <label for="">Quantity: </label>
                 <input type="number" min="0" value="{{ cart_item.order_quantity }}" /> <br />
                 <form action="/cart/remove_from_cart/{{ cart_item.id }}">

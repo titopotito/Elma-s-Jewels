@@ -4,7 +4,7 @@
 {% block extrahead %}
 <meta name="description" content="Collection of all jewelries in Elma's Jewels" />
 <link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<link rel="stylesheet" href="{% static 'css/product.css' %}" />
+<link rel="stylesheet" href="{% static 'css/jewelry.css' %}" />
 <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
 <title>ELMA'S JEWELS | ALL JEWELRY</title>
 {% endblock %}
@@ -14,29 +14,29 @@
 <!-- #### -->
 {% include 'partials/header.html' %}
 <main>
-    <section id="product-section">
+    <section id="jewelry-section">
         <figure>
-            <img src="{{ product.image.url }}" alt="" />
+            <img src="{{ jewelry.image.url }}" alt="" />
             <figcaption></figcaption>
         </figure>
 
-        <h2>{{ product.name }}</h2>
+        <h2>{{ jewelry.name }}</h2>
         <div>
-            <strong><data class="price">$ {{ product.price }}</data></strong>
+            <strong><data class="price">$ {{ jewelry.price }}</data></strong>
         </div>
-        <form action="/cart/add_to_cart/{{ product.id }}" method="post">
+        <form action="/cart/add_to_cart/{{ jewelry.id }}" method="post">
             {% csrf_token %}
             <button type="submit">ADD TO CART</button>
         </form>
-        <p>{{ product.description }}</p>
+        <p>{{ jewelry.description }}</p>
         <aside>
             <h3>CARE TIPS</h3>
-            <p>{{ product.care_tips }}</p>
+            <p>{{ jewelry.care_tips }}</p>
         </aside>
     </section>
-    <section id="product-review-section">
+    <section id="jewelry-review-section">
         <h2>CUSTOMER REVIEWS</h2>
-        <div id="{{ product.rating }}">
+        <div id="{{ jewelry.rating }}">
             <span class="fa fa-star checked"></span>
             <span class="fa fa-star checked"></span>
             <span class="fa fa-star checked"></span>
