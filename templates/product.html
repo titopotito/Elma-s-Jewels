@@ -16,58 +16,27 @@
 <main>
     <section id="product-section">
         <figure>
-            <img src="{% static 'images/rings/sabrianna-a9HPsYvWr-E-unsplash.jpg' %}" alt="" />
+            <img src="{{ product.image.url }}" alt="" />
             <figcaption></figcaption>
         </figure>
 
-        <h2>ALPHA GOLD RING</h2>
+        <h2>{{ product.name }}</h2>
         <div>
-            <strong><data class="price">$ 1,300</data></strong>
+            <strong><data class="price">$ {{ product.price }}</data></strong>
         </div>
-        <form action="">
-            <button>ADD TO CART</button>
+        <form action="/cart/add_to_cart/{{ product.id }}" method="post">
+            {% csrf_token %}
+            <button type="submit">ADD TO CART</button>
         </form>
-        <p>
-            Sleek, classy and definitely a style staple. The herringbone chain Antonette Necklace is
-            part of a set designed to create a mirage of liquid gold that flows effortlessly. An
-            essential that stimulates the confidence in any look.
-        </p>
+        <p>{{ product.description }}</p>
         <aside>
             <h3>CARE TIPS</h3>
-            <p>
-                <em>SHINE PRESERVATION: </em> We recommend that the jewelry be removed before going
-                to bed or participating in extreme physical activities. Exposure to certain harsh
-                chemicals or environments will result in compromising the radiance of your jewelry.
-                This includes, but is not limited to the following: perspiration, perfumes, cleaning
-                agents, chlorine, salt water, and silver polish.
-            </p>
-            <p>
-                <em>CLEANING: </em> Using a small, slightly damp, soft cloth lightly polish your
-                jewelry until the shine has visibly improved. If the dirt is hard to remove, soak
-                the jewelry in clean water. Gold plated jewelry requires more care, using cloth
-                roughly may cause the gold plating to fade away, therefore it is very important that
-                this process is done gently to avoid the gold plating from wearing away.
-            </p>
-            <p>
-                <em>STORAGE: </em> Every order from us comes with our very own signature Viea pouch
-                that is designed with a special microfiber fabric especially made to preserve the
-                jewelry quality as well as for safe and secure storage of your jewelry. Store your
-                jewelry in our signature Viea pouch, away from humid places, direct sunlight and
-                heat.
-            </p>
-            <p>
-                <em>NOTE: </em> Gold plated and Gold Vermeil pieces are, by default, more fragile
-                and liable to lose their colour over time. The speed at which our jewelry fades will
-                depend on multiple variables such as skincare products, level of perspiration or
-                even your natural skin. However, Viea pieces can last for a long time, years at
-                that, once specially cared for. For this reason, it is particularly important to
-                take special care of your jewelry to ensure a quality that lasts.
-            </p>
+            <p>{{ product.care_tips }}</p>
         </aside>
     </section>
     <section id="product-review-section">
         <h2>CUSTOMER REVIEWS</h2>
-        <div id="average-rating">
+        <div id="{{ product.rating }}">
             <span class="fa fa-star checked"></span>
             <span class="fa fa-star checked"></span>
             <span class="fa fa-star checked"></span>

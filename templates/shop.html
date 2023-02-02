@@ -13,178 +13,219 @@
 <!-- #### -->
 {% include 'partials/header.html' %}
 <main id="shop-section">
-    <h2>ALL JEWELRY</h2>
-    <form action="">
-        <label for="sort-jewelry"></label>
-        <select name="sort-jewelry" id="sort-jewelry">
-            <option value="best-selling">Best Selling</option>
-            <option value="a-z">Alphabetical, A-Z</option>
-            <option value="z-a">Alphabetical, Z-A</option>
-            <option value="low-high">Price, low to high</option>
-            <option value="high-low">Price, high to low</option>
-            <option value="old-new">Date, old to new</option>
-            <option value="new-old">Date new to old</option>
+    <h2>JEWELRY</h2>
+    <form action="{% url 'shop' %}" method="get" id="submit-form"></form>
+    <form action="{% url 'shop' %}" method="get" id="sort-form">
+        <label for="sort-option">Sort By: </label>
+        <select name="sort-option" id="sort-option">
+            <option value="best-selling" {% if sort_option == 'best-selling'%}selected{% endif %}>Best Selling</option>
+            <option value="a-z" {% if sort_option == 'a-z'%}selected{% endif %}>Alphabetical, A-Z</option>
+            <option value="z-a" {% if sort_option == 'z-a'%}selected{% endif %}>Alphabetical, Z-A</option>
+            <option value="low-high" {% if sort_option == 'low-high'%}selected{% endif %}>Price, low to high</option>
+            <option value="high-low" {% if sort_option == 'high-low'%}selected{% endif %}>Price, high to low</option>
+            <option value="old-new" {% if sort_option == 'old-new'%}selected{% endif %}>Date, old to new</option>
+            <option value="new-old" {% if sort_option == 'new-old'%}selected{% endif %}>Date, new to old</option>
         </select>
     </form>
-    <ul>
+    <form action="{% url 'shop' %}" method="get" id="filter-form">
+        <ul>
+            <h3>CATEGORY</h3>
+            <li>
+                <input type="checkbox" class="filter-checkbox" {% if 'rings' in category_options %}checked{% endif %} name="category" value="rings">
+                <label for="">Rings</label>
+            </li>
+              <li>
+                <input type="checkbox" class="filter-checkbox" {% if 'earrings' in category_options %}checked{% endif %} name="category" value="earrings">
+                <label for="">Earrings</label>
+            </li>
+              <li>
+                <input type="checkbox" class="filter-checkbox" {% if 'necklaces' in category_options %}checked{% endif %} name="category" value="necklaces">
+                <label for="">Necklaces</label>
+            </li>
+              <li>
+                <input type="checkbox" class="filter-checkbox" {% if 'bracelets' in category_options %}checked{% endif %} name="category" value="bracelets">
+                <label for="">Bracelets</label>
+            </li>
+        </ul>
+        <ul>
+            <h3>METAL</h3>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'base metal' in metal_options %}checked{% endif %} value="base metal">
+                <label for="">Base Metal</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'brass' in metal_options %}checked{% endif %} value="brass">
+                <label for="">Brass</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'copper' in metal_options %}checked{% endif %} value="copper">
+                <label for="">Copper</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'multi-tone gold' in metal_options %}checked{% endif %} value="multi-tone gold">
+                <label for="">Multi-Tone Gold</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'platinum' in metal_options %}checked{% endif %} value="platinum">
+                <label for="">Platinum</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'rose gold' in metal_options %}checked{% endif %} value="rose gold">
+                <label for="">Rose Gold</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'silver' in metal_options %}checked{% endif %} value="silver">
+                <label for="">Silver</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'stainless steel' in metal_options %}checked{% endif %} value="stainless steel">
+                <label for="">Stainless Steel</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'sterling silver' in metal_options %}checked{% endif %} value="sterling silver">
+                <label for="">Sterling Silver</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'titanium' in metal_options %}checked{% endif %} value="titanium">
+                <label for="">Titanium</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'white gold' in metal_options %}checked{% endif %} value="white gold">
+                <label for="">White Gold</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'yellow gold' in metal_options %}checked{% endif %} value="yellow gold">
+                <label for="">Yellow Gold</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="metal" {% if 'non-metal' in metal_options %}checked{% endif %} value="non-metal">
+                <label for="">Non-metal</label>
+            </li>
+        </ul>
+        
+        <ul>
+            <h3>STONE</h3>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'no stone' in stone_options %}checked{% endif %} value="no stone">
+                <label for="">No Stone</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'diamond' in stone_options %}checked{% endif %} value="diamond">
+                <label for="">Diamond</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'sapphire' in stone_options %}checked{% endif %} value="sapphire">
+                <label for="">Sapphire</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'pearl' in stone_options %}checked{% endif %} value="pearl">
+                <label for="">Pearl</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'ruby' in stone_options %}checked{% endif %} value="ruby">
+                <label for="">Ruby</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'cubic zirconia' in stone_options %}checked{% endif %} value="cubic zirconia">
+                <label for="">Cubic Zirconia</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'opal' in stone_options %}checked{% endif %} value="opal">
+                <label for="">Opal</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'cz' in stone_options %}checked{% endif %} value="cz">
+                <label for="">CZ</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'amethyst' in stone_options %}checked{% endif %} value="amethyst">
+                <label for="">Amethyst</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'onyx' in stone_options %}checked{% endif %} value="onyx">
+                <label for="">Onyx</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'emerald' in stone_options %}checked{% endif %} value="emerald">
+                <label for="">Emerald</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'aquamarine' in stone_options %}checked{% endif %} value="aquamarine">
+                <label for="">Aquamarine</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'garnet' in stone_options %}checked{% endif %} value="garnet">
+                <label for="">Garnet</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'agate' in stone_options %}checked{% endif %} value="agate">
+                <label for="">Agate</label>
+            </li>
+            <li>
+                <input type="checkbox" class="filter-checkbox" name="stone" {% if 'jade' in stone_options %}checked{% endif %} value="jade">
+                <label for="">Jade</label>
+            </li>
+        </ul>
+    </form>
+    <ul id="product-list">
+        {% for product in products%}
         <li>
             <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/rings/sabrianna-a9HPsYvWr-E-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>ALPHA GOLD RING</h3>
-                    <p><data value="130">$ 130</data></p>
+                <a href="/product/{{ product.category }}/{{ product.id }}">
+                    <img src="{{ product.image.url }}" alt="" />
+                    <h3>{{ product.name }}</h3>
+                    <p><data value="{{ product.price }}">$ {{ product.price }}</data></p>
                 </a>
             </article>
         </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/earrings/andrew-hutchings-Asngw4A5_tM-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>ANDREW EARRINGS</h3>
-                    <p><data value="130">$ 100</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/earrings/sabrianna-LRubu3f5yWM-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>SABRIANNA SILVER EARRINGS</h3>
-                    <p><data value="130">$ 150</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/rings/sabrianna-5vzRegjuBP4-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>SABRIANNA GOLD LEAF RING</h3>
-                    <p><data value="130">$ 180</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/rings/sabrianna-mmCm6c2ru5A-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>SAPPHIRE RING</h3>
-                    <p><data value="130">$ 100</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/necklaces/albany-capture-n89aymEuLAs-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>ALBANY GOLD NECKLACE</h3>
-                    <p><data value="130">$ 150</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/rings/sabrianna-a9HPsYvWr-E-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>ALPHA GOLD RING</h3>
-                    <p><data value="130">$ 130</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/earrings/andrew-hutchings-Asngw4A5_tM-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>ANDREW EARRINGS</h3>
-                    <p><data value="130">$ 100</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/earrings/sabrianna-LRubu3f5yWM-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>SABRIANNA SILVER EARRINGS</h3>
-                    <p><data value="130">$ 150</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/rings/sabrianna-5vzRegjuBP4-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>SABRIANNA GOLD LEAF RING</h3>
-                    <p><data value="130">$ 180</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/rings/sabrianna-mmCm6c2ru5A-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>SAPPHIRE RING</h3>
-                    <p><data value="130">$ 100</data></p>
-                </a>
-            </article>
-        </li>
-        <li>
-            <article>
-                <a href="">
-                    <img
-                        src="{% static 'images/necklaces/albany-capture-n89aymEuLAs-unsplash.jpg' %}"
-                        alt=""
-                    />
-                    <h3>ALBANY GOLD NECKLACE</h3>
-                    <p><data value="130">$ 150</data></p>
-                </a>
-            </article>
-        </li>
+        {% endfor %}
     </ul>
-    <nav>
+
+    <!-- PAGINATION -->
+
+    <nav id="pagination">
         <ul class="pagination">
-            <li><a href="?page=1" rel="prev">&lt</a></li>
+            {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}">&laquo;</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">&laquo;</a>
+            </li>
+            {% endif %}
 
-            <li><a href="?page=1">1</a></li>
+            <!-- #### -->
 
-            <li class="active"><a href="?page=2">2</a></li>
-            <li><a href="?page=3">3</a></li>
+            {% for page_number in products.paginator.page_range %}
+            <!-- ### -->
+            {% if products.number == page_number %}
+            <!-- ### -->
+            <li class="page-item active">
+                <a class="page-link">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a href="?page={{ page_number }}" class="page-link">{{ page_number }}</a>
+            </li>
+            {% endif %}
+            <!-- ### -->
+            {% endfor %}
+            <!-- ### -->
 
-            <li><a href="?page=3" rel="next">&gt</a></li>
+            {% if products.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}">&raquo;</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">&raquo;</a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
 </main>
 {% include 'partials/footer.html' %}
+<script src="{% static 'js/script.js' %}"></script>
 <!-- #### -->
 {% endblock %}
