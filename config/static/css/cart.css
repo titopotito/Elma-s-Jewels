@@ -1,39 +1,240 @@
 #cart-section {
     background-color: #fff3e4;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #cart-section * {
     color: black;
 }
 
-#cart-section li {
-    padding: 1rem 0;
+#cart-list {
+    width: 95%;
+}
+
+#cart-list p {
+    text-align: center;
+    margin: 2.5rem 0;
+}
+
+#cart-header {
+    display: none;
+}
+
+button:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.cart-items {
+    width: 100%;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    grid-template-areas:
+        "checkbox item"
+        "empty price"
+        "empty quantity"
+        "empty total";
+}
+
+.cart-items > *:not(.cart-checkbox) {
     display: flex;
+    margin: 0.5rem 0;
+}
+
+.cart-items span {
+    width: 10ch;
+}
+
+.cart-checkbox {
+    grid-area: checkbox;
+}
+
+.cart-item {
+    grid-area: item;
+    align-items: center;
     gap: 0.5rem;
 }
 
-#cart-section img {
-    width: 10ch;
+.cart-item figcaption {
+    text-transform: capitalize;
+}
+
+.cart-price {
+    grid-area: price;
+}
+
+.cart-quantity {
+    grid-area: quantity;
+}
+
+.cart-quantity input {
+    width: 5ch;
+    border: 1px solid #483434;
+    text-align: center;
+}
+
+.cart-quantity input::-webkit-outer-spin-button,
+.cart-quantity input::-webkit-inner-spin-button {
+    display: none;
+}
+
+.cart-quantity form:nth-of-type(1) {
+    display: flex;
+}
+
+.cart-quantity form:nth-of-type(1) button {
+    background-color: #483434;
+    color: #fff3e4 !important;
+    border: none;
+    padding: 0.25rem 0.5rem;
+}
+
+.cart-quantity form:nth-of-type(2) button {
+    background-color: #fff3e4;
+    color: #483434 !important;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.cart-total {
+    grid-area: total;
+}
+
+.cart-items img {
+    width: 15ch;
     object-fit: cover;
 }
 
-#cart-section h3 {
+.cart-items figcaption {
     font-size: medium;
+    font-weight: bold;
 }
 
-#cart-section input {
-    width: 5ch;
-}
-
-#cart-section textarea {
+#cart-checkout-section {
+    width: 100%;
     display: flex;
-    justify-self: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
-#cart-section button {
-    padding: 0.25rem 0.5rem;
+#cart-checkout-section textarea {
+    width: 300px;
+    height: 100px;
+    margin-top: 1.5rem;
+}
+
+#cart-checkout-section div {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+#cart-checkout-section div label {
+    position: absolute;
+    right: 175px;
+}
+
+#cart-checkout-section div:last-child {
+    gap: 0.5rem;
+    width: 300px;
+}
+
+#cart-checkout-section div:last-child p {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#cart-checkout-section button {
+    padding: 0.75rem 1.25rem;
+    letter-spacing: 4px;
     color: white;
     background-color: #483434;
     border: none;
+    width: 100%;
+}
+
+#cart-checkout-section button i {
+    color: #fff3e4;
+}
+
+#cart-checkout-section em {
+    font-size: 0.8rem;
+}
+
+hr {
+    width: 100%;
+    color: black;
+    margin: 1rem 0;
+}
+
+@media screen and (min-width: 640px) {
+    .cart-items {
+        width: 100%;
+        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr 4.5fr 4.5fr;
+        grid-template-areas:
+            "checkbox item price"
+            "checkbox item quantity"
+            "checkbox item total";
+    }
+
+    .cart-items span {
+        margin-left: 2rem;
+    }
+
+    #cart-checkout-section {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #cart-checkout-section {
+        width: 90%;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #cart-list {
+        width: 80%;
+    }
+    #cart-header {
+        width: 100%;
+        align-items: center;
+        display: grid;
+        grid-template-columns: 0.5fr 5fr 1.5fr 1.5fr 1.5fr;
+        grid-template-areas: "checkbox item price quantity total";
+    }
+
+    .cart-items {
+        width: 100%;
+        align-items: center;
+        display: grid;
+        grid-template-columns: 0.5fr 5fr 1.5fr 1.5fr 1.5fr;
+        grid-template-areas: "checkbox item price quantity total";
+    }
+
+    .cart-items span {
+        margin-left: 0;
+        display: none;
+    }
+
+    .cart-price,
+    .cart-quantity,
+    .cart-total {
+        display: flex;
+        justify-content: center;
+    }
+
+    #cart-checkout-section {
+        width: 80%;
+    }
 }

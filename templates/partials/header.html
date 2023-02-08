@@ -9,8 +9,12 @@
             <a href="{% url 'contact' %}">CONTACT</a>
         </div>
         <div>
-            <a href="{% url 'cart' %}" class="fas fa-shopping-cart"></a>
-            <a href="#" class="fas fa-user-alt"></a>
+            <a href="{% url 'cart' %}" class="fas fa-shopping-cart">
+                <span id="count-pill"><span>{{ cart_item_count }}</span></span>
+            </a>
+            <a href="#" class="fas fa-user-alt">
+                <span>Sign In</span>
+            </a>
         </div>
     </nav>
     <section id="banner">

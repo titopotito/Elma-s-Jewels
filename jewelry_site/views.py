@@ -6,7 +6,7 @@ from .models import Jewelry, CartItem, Cart
 def index(request):
     best_sellers = Jewelry.objects.all().order_by('-sold')[:6]
     cart = Cart.objects.all()[0]
-    return render(request, 'index.html', {'best_sellers': best_sellers, 'cart': cart})
+    return render(request, 'index.html', {'best_sellers': best_sellers, 'cart': cart, 'cart_item_count': CartItem.objects.all().count()})
 
 
 def about(request):
@@ -21,12 +21,13 @@ def contact(request):
 
 def cart(request):
     cart = Cart.objects.all()[0]
-    cart_items = CartItem.objects.all()
+    cart_items = CartItem.objects.all().order_by('id')
     total_cost = 0
     if cart_items.count() > 0:
         for cart_item in cart_items:
-            total_cost = total_cost + cart_item.sub_total
-    return render(request, 'cart.html', {'cart_items': cart_items, 'cart': cart, 'total_cost': total_cost})
+            total_cost = total_cost + \
+                (cart_item.sub_total*cart_item.order_quantity)
+    return render(request, 'cart.html', {'cart_items': cart_items, 'cart_item_count': CartItem.objects.all().count(), 'cart': cart, 'total_cost': total_cost})
 
 
 def add_to_cart(request, jewelry_id):
@@ -44,7 +45,17 @@ def remove_from_cart(request, cart_item_id):
     return redirect('cart')
 
 
+def update_order_quantity(request, cart_item_id):
+    if int(request.POST['order-quantity']) == 0:
+        print('here')
+        remove_from_cart(request, cart_item_id)
+    cart_item = CartItem.objects.get(id=cart_item_id)
+    cart_item.order_quantity = request.POST['order-quantity']
+    cart_item.save()
+    return redirect('cart')
+
 # SHOP /////////////////////////////////////////////////////////////////////////////////
+
 
 def list_jewelry(request):
     jewelry = Jewelry.objects.all().order_by('-sold')
@@ -56,14 +67,14 @@ def list_jewelry(request):
     if 'sort-option' in request.GET:
         sort_option = request.GET['sort-option']
         jewelry = sort_jewelry(sort_option, jewelry)
-    cart = Cart.objects.all()[0]
 
     paginator = Paginator(jewelry, 16)
     page = request.GET.get('page')
     paged_jewelry = paginator.get_page(page)
     context = {
         'jewelry': paged_jewelry,
-        'cart': cart,
+        'cart': Cart.objects.all()[0],
+        'cart_item_count': CartItem.objects.all().count(),
         'sort_option': sort_option,
         'category_options': category_options,
         'metal_options': metal_options,
@@ -107,9 +118,12 @@ def sort_jewelry(sort_option, jewelry):
 
 
 def show_jewelry(request, jewelry_id):
-    cart = Cart.objects.all()[0]
-    jewelry = Jewelry.objects.get(pk=jewelry_id)
-    return render(request, 'jewelry.html', {'jewelry': jewelry, 'cart': cart})
+    context = {
+        'jewelry': Jewelry.objects.get(pk=jewelry_id),
+        'cart': Cart.objects.all()[0],
+        'cart_item_count': CartItem.objects.all().count()
+    }
+    return render(request, 'jewelry.html', context)
 
 
 # PAYMENT ////////////////////////////////
