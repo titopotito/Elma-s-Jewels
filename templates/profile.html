@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% load static %}
+<!-- ### -->
+
+{% block extrahead %}
+<meta name="description" content="Elma's Jewels Home Page" />
+<link rel="stylesheet" href="{% static 'css/all.css' %}" />
+<title>ELMA'S JEWELS | HOME</title>
+{% endblock %}
+<!-- ##### -->
+
+{% block content %}
+<!-- #### -->
+{% include 'partials/header2.html' %}
+<main>
+    <h2>Pofile</h2>
+</main>
+{% include 'partials/footer.html' %}
+<script src="{% static 'js/header.js' %}"></script>
+<!-- #### -->
+{% endblock %}

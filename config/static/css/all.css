@@ -80,6 +80,29 @@ header nav div:last-child a span {
     font-weight: normal;
 }
 
+header nav div:last-child a:hover {
+    cursor: pointer;
+}
+
+header #user-menu {
+    display: none;
+    position: absolute;
+    top: 1.8rem;
+    right: 0;
+    z-index: 1;
+    background-color: #6b4f4f;
+}
+
+header #user-menu li a {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+header #user-menu li a:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
 header .fas:hover,
 header a:hover {
     opacity: 0.7;

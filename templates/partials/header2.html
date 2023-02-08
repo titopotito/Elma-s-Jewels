@@ -4,7 +4,7 @@
     <nav>
         <div>
             <a href="{% url 'index' %}">HOME</a>
-            <a href="{% url 'list_jewelry' %}">SHOP</a>
+            <a href="{% url 'shop' %}">SHOP</a>
             <a href="{% url 'about' %}">ABOUT</a>
             <a href="{% url 'contact' %}">CONTACT</a>
         </div>
@@ -12,7 +12,13 @@
             <a href="{% url 'cart' %}" class="fas fa-shopping-cart"
                 ><span id="count-pill"><span>{{ cart_item_count }}</span></span></a
             >
-            <a href="#" class="fas fa-user-alt"></a>
+            <a class="fas fa-user-alt" id="user-menu-btn">
+                <span>{{ user.username }}</span>
+            </a>
+            <ul id="user-menu">
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
         </div>
     </nav>
 </header>

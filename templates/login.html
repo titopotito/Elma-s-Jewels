@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% load static %}
+<!-- ### -->
+
+{% block extrahead %}
+<meta name="description" content="Elma's Jewels Home Page" />
+<link rel="stylesheet" href="{% static 'css/all.css' %}" />
+<link rel="stylesheet" href="{% static 'css/login.css' %}" />
+<title>ELMA'S JEWELS | HOME</title>
+{% endblock %}
+<!-- ##### -->
+
+{% block content %}
+<!-- #### -->
+{% include 'partials/header2.html' %}
+<main>
+    <h2>Login</h2>
+    {% if messages is None %} {% for message in messages %}
+    <p>{{ message}}</p>
+    {% endfor %} {% endif %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" />
+        </div>
+        <div>
+            <button type="submit">Login</button>
+            <a href="{% url 'register' %}">Create an Account</a>
+        </div>
+    </form>
+</main>
+{% include 'partials/footer.html' %}
+<script src="{% static 'js/header.js' %}"></script>
+<!-- #### -->
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% load static %}
+<!-- ### -->
+
+{% block extrahead %}
+<meta name="description" content="Elma's Jewels Home Page" />
+<link rel="stylesheet" href="{% static 'css/all.css' %}" />
+<link rel="stylesheet" href="{% static 'css/register.css' %}" />
+<title>ELMA'S JEWELS | HOME</title>
+{% endblock %}
+<!-- ##### -->
+
+{% block content %}
+<!-- #### -->
+{% include 'partials/header2.html' %}
+<main>
+    <h2>Create an Account</h2>
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <section>
+            <h3>Account Details</h3>
+            <div>{{ form.username.label }} {{ form.username }}</div>
+            <div>{{ form.email.label }} {{ form.email }}</div>
+            <div>{{ form.password1.label }} {{ form.password1 }}</div>
+            <div>{{ form.password2.label }} {{ form.password2 }}</div>
+        </section>
+        <section>
+            <h3>Address Details</h3>
+            <div>
+                <label for="street">Street</label>
+                <input type="text" id="street" name="street" />
+            </div>
+            <div>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" />
+            </div>
+            <div>
+                <label for="state-province">State/Province</label>
+                <input type="text" id="state-province" name="state-province" />
+            </div>
+            <div>
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country" />
+            </div>
+            <div>
+                <label for="zip-code">Zip Code</label>
+                <input type="number" id="zip-code" name="zip-code" />
+            </div>
+        </section>
+        <section>
+            <div>
+                <button type="submit">Register</button>
+                <a href="{% url 'login' %}">Already have an account?</a>
+            </div>
+        </section>
+    </form>
+</main>
+{% include 'partials/footer.html' %}
+<script src="{% static 'js/header.js' %}"></script>
+<!-- #### -->
+{% endblock %}

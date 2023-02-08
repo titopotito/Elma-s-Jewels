@@ -1,12 +1,30 @@
 from django.shortcuts import render, redirect
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import Paginator
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Jewelry, CartItem, Cart
+from .forms import CreateUserForm
 
 
 def index(request):
     best_sellers = Jewelry.objects.all().order_by('-sold')[:6]
     cart = Cart.objects.all()[0]
-    return render(request, 'index.html', {'best_sellers': best_sellers, 'cart': cart, 'cart_item_count': CartItem.objects.all().count()})
+    cart_item_count = CartItem.objects.all().count()
+
+    context = {
+        'best_sellers': best_sellers,
+        'cart': cart,
+        'cart_item_count': cart_item_count
+    }
+    return render(request, 'index.html', context)
+
+
+def profile(request):
+    context = {
+        'cart_item_count': CartItem.objects.all().count(),
+    }
+    return render(request, 'profile.html', context)
 
 
 def about(request):
@@ -19,62 +37,71 @@ def contact(request):
 
 # CART ///////////////////////////////////////////////////////////
 
-def cart(request):
+def cart_page(request):
     cart = Cart.objects.all()[0]
     cart_items = CartItem.objects.all().order_by('id')
+    cart_item_count = CartItem.objects.all().count()
+
     total_cost = 0
     if cart_items.count() > 0:
         for cart_item in cart_items:
-            total_cost = total_cost + \
-                (cart_item.sub_total*cart_item.order_quantity)
-    return render(request, 'cart.html', {'cart_items': cart_items, 'cart_item_count': CartItem.objects.all().count(), 'cart': cart, 'total_cost': total_cost})
+            total_cost = total_cost + (cart_item.sub_total*cart_item.order_quantity)
+
+    context = {
+        'cart_items': cart_items,
+        'cart_item_count': cart_item_count,
+        'cart': cart,
+        'total_cost': total_cost
+    }
+    return render(request, 'cart.html', context)
 
 
-def add_to_cart(request, jewelry_id):
-    jewelry = Jewelry.objects.get(pk=jewelry_id)
-    cart = Cart.objects.all()[0]
-    cart_item = CartItem(cart=cart, jewelry=jewelry,
-                         order_quantity=1, sub_total=jewelry.price)
-    cart_item.save()
-    return redirect('cart')
+def add_cart_item(request, jewelry_id):
+    if request.method == 'POST':
+        jewelry = Jewelry.objects.get(pk=jewelry_id)
+        cart = Cart.objects.all()[0]
+        cart_item = CartItem(cart=cart, jewelry=jewelry, order_quantity=1, sub_total=jewelry.price)
+        cart_item.save()
+        return redirect('cart')
 
 
-def remove_from_cart(request, cart_item_id):
-    cart_item = CartItem.objects.get(id=cart_item_id)
-    cart_item.delete()
-    return redirect('cart')
+def delete_cart_item(request, cart_item_id):
+    if request.method == 'POST':
+        cart_item = CartItem.objects.get(id=cart_item_id)
+        cart_item.delete()
+        return redirect('cart')
 
 
-def update_order_quantity(request, cart_item_id):
-    if int(request.POST['order-quantity']) == 0:
-        print('here')
-        remove_from_cart(request, cart_item_id)
-    cart_item = CartItem.objects.get(id=cart_item_id)
-    cart_item.order_quantity = request.POST['order-quantity']
-    cart_item.save()
-    return redirect('cart')
+def update_cart_item(request, cart_item_id):
+    if request.method == 'POST':
+        print(request.POST['order-quantity'])
+        if int(request.POST['order-quantity']) == 0:
+            delete_cart_item(request, cart_item_id)
+            return redirect('cart')
+        cart_item = CartItem.objects.get(id=cart_item_id)
+        cart_item.order_quantity = request.POST['order-quantity']
+        cart_item.save()
+        return redirect('cart')
 
 # SHOP /////////////////////////////////////////////////////////////////////////////////
 
 
-def list_jewelry(request):
+def shop_page(request):
     jewelry = Jewelry.objects.all().order_by('-sold')
+    cart = Cart.objects.all()[0]
+    cart_item_count = CartItem.objects.all().count()
 
-    (jewelry, category_options, metal_options,
-     stone_options) = filter_jewelry(request, jewelry)
+    (filtered_jewelry, category_options, metal_options, stone_options) = filter_jewelry(request, jewelry)
+    (sorted_jewelry, sort_option) = sort_jewelry(request, filtered_jewelry)
 
-    sort_option = 'best-selling'
-    if 'sort-option' in request.GET:
-        sort_option = request.GET['sort-option']
-        jewelry = sort_jewelry(sort_option, jewelry)
-
-    paginator = Paginator(jewelry, 16)
+    paginator = Paginator(sorted_jewelry, 16)
     page = request.GET.get('page')
     paged_jewelry = paginator.get_page(page)
+
     context = {
         'jewelry': paged_jewelry,
-        'cart': Cart.objects.all()[0],
-        'cart_item_count': CartItem.objects.all().count(),
+        'cart': cart,
+        'cart_item_count': cart_item_count,
         'sort_option': sort_option,
         'category_options': category_options,
         'metal_options': metal_options,
@@ -100,37 +127,48 @@ def filter_jewelry(request, jewelry):
     return (jewelry, category_options, metal_options, stone_options)
 
 
-def sort_jewelry(sort_option, jewelry):
-    if sort_option == 'best-selling':
-        return jewelry.order_by('-sold')
-    elif sort_option == 'a-z':
-        return jewelry.order_by('name')
-    elif sort_option == 'z-a':
-        return jewelry.order_by('-name')
-    elif sort_option == 'low-high':
-        return jewelry.order_by('price')
-    elif sort_option == 'high-low':
-        return jewelry.order_by('-price')
-    elif sort_option == 'old-new':
-        return jewelry.order_by('date_added')
-    elif sort_option == 'new-old':
-        return jewelry.order_by('-date_added')
+def sort_jewelry(request, jewelry):
+    sorted_jewelry = jewelry.order_by('-sold')
+    sort_option = 'best-selling'
+    if 'sort-option' in request.GET:
+        sort_option = request.GET['sort-option']
+        if sort_option == 'best-selling':
+            return (sorted_jewelry, sort_option)
+        elif sort_option == 'a-z':
+            sorted_jewelry = jewelry.order_by('name')
+        elif sort_option == 'z-a':
+            sorted_jewelry = jewelry.order_by('-name')
+        elif sort_option == 'low-high':
+            sorted_jewelry = jewelry.order_by('price')
+        elif sort_option == 'high-low':
+            sorted_jewelry = jewelry.order_by('-price')
+        elif sort_option == 'old-new':
+            sorted_jewelry = jewelry.order_by('date_added')
+        elif sort_option == 'new-old':
+            return jewelry.order_by('-date_added')
+    return (sorted_jewelry, sort_option)
 
 
-def show_jewelry(request, jewelry_id):
+def jewelry_page(request, jewelry_id):
+    jewelry = Jewelry.objects.get(pk=jewelry_id)
+    cart = Cart.objects.all()[0]
+    cart_item_count = Cart.objects.all()[0]
+
     context = {
-        'jewelry': Jewelry.objects.get(pk=jewelry_id),
-        'cart': Cart.objects.all()[0],
-        'cart_item_count': CartItem.objects.all().count()
+        'jewelry': jewelry,
+        'cart': cart,
+        'cart_item_count': cart_item_count
     }
     return render(request, 'jewelry.html', context)
 
 
 # PAYMENT ////////////////////////////////
+@login_required(login_url='login')
 def add_to_checkout(request, cart_id):
     return redirect('checkout', cart_id=cart_id)
 
 
+@login_required(login_url='login')
 def checkout(request, cart_id):
     return render(request, 'checkout.html')
 
@@ -141,3 +179,50 @@ def payment(request):
 
 def shipping(request):
     return render(request, 'shipping.html')
+
+###############################################
+
+
+def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+        else:
+            messages.info(request, 'Username or Password is not correct.')
+
+    context = {
+        'cart_item_count': CartItem.objects.all().count(),
+        'messages': messages
+    }
+    return render(request, 'login.html', context)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully!')
+            return redirect('login')
+
+    context = {
+        'form': form,
+        'messages': messages
+    }
+    return render(request, 'register.html', context)
