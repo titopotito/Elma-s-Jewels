@@ -12,7 +12,7 @@ class CartAdmin(admin.ModelAdmin):
 
 
 class CartItemAdmin(admin.ModelAdmin):
-    fields = ['order_quantity']
+    fields = ['order_quantity', 'cart']
 
 
 admin.site.register(Jewelry, JewelryAdmin)

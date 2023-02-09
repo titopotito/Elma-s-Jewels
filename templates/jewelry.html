@@ -24,10 +24,17 @@
         <div>
             <strong><data class="price">$ {{ jewelry.price }}</data></strong>
         </div>
+        {% if user.is_authenticated %}
         <form action="/cart/add_cart_item/{{ jewelry.id }}" method="post">
             {% csrf_token %}
             <button type="submit">ADD TO CART</button>
         </form>
+        {% else %}
+        <form action="/login" method="get">
+            {% csrf_token %}
+            <button type="submit">ADD TO CART</button>
+        </form>
+        {% endif %}
         <p>{{ jewelry.description }}</p>
         <aside>
             <h3>CARE TIPS</h3>

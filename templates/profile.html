@@ -13,6 +13,12 @@
 {% include 'partials/header2.html' %}
 <main>
     <h2>Pofile</h2>
+    <ul>
+        <li>{{ address.unit }}</li>
+        <li>{{ address.street }}</li>
+        <li>{{ address.city }}</li>
+        <li>{{ address.country.name }}, {{ address.country.code }}</li>
+    </ul>
 </main>
 {% include 'partials/footer.html' %}
 <script src="{% static 'js/header.js' %}"></script>

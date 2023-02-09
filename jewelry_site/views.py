@@ -3,28 +3,37 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Jewelry, CartItem, Cart
-from .forms import CreateUserForm
+from .models import Jewelry, CartItem, Cart, Address
+from django.contrib.auth.models import User
+from .forms import CreateUserForm, CreateAddressForm
 
 
 def index(request):
-    best_sellers = Jewelry.objects.all().order_by('-sold')[:6]
-    cart = Cart.objects.all()[0]
-    cart_item_count = CartItem.objects.all().count()
+    if request.method == 'GET':
+        best_sellers = Jewelry.objects.all().order_by('-sold')[:6]
+        context = {'best_sellers': best_sellers}
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user.id)
+            cart_item_count = CartItem.objects.filter(cart=cart.id).count()
+            context['cart'] = cart
+            context['cart_item_count'] = cart_item_count
 
-    context = {
-        'best_sellers': best_sellers,
-        'cart': cart,
-        'cart_item_count': cart_item_count
-    }
-    return render(request, 'index.html', context)
+        return render(request, 'index.html', context)
 
 
+@login_required(login_url='login')
 def profile(request):
-    context = {
-        'cart_item_count': CartItem.objects.all().count(),
-    }
-    return render(request, 'profile.html', context)
+    if request.method == 'GET':
+        cart = Cart.objects.get(user=request.user.id)
+        cart_item_count = CartItem.objects.filter(cart=cart.id).count()
+        address = Address.objects.get(user=request.user.id)
+        context = {
+            'cart': cart,
+            'cart_item_count': cart_item_count,
+            'address': address
+        }
+
+        return render(request, 'profile.html', context)
 
 
 def about(request):
@@ -36,35 +45,38 @@ def contact(request):
 
 
 # CART ///////////////////////////////////////////////////////////
-
+@login_required(login_url='login')
 def cart_page(request):
-    cart = Cart.objects.all()[0]
-    cart_items = CartItem.objects.all().order_by('id')
-    cart_item_count = CartItem.objects.all().count()
+    if request.method == 'GET':
+        cart = Cart.objects.get(user=request.user.id)
+        cart_items = CartItem.objects.filter(cart=cart.id).order_by('id')
+        cart_item_count = cart_items.count()
 
-    total_cost = 0
-    if cart_items.count() > 0:
-        for cart_item in cart_items:
-            total_cost = total_cost + (cart_item.sub_total*cart_item.order_quantity)
+        total_cost = 0
+        if cart_items.count() > 0:
+            for cart_item in cart_items:
+                total_cost = total_cost + (cart_item.sub_total*cart_item.order_quantity)
 
-    context = {
-        'cart_items': cart_items,
-        'cart_item_count': cart_item_count,
-        'cart': cart,
-        'total_cost': total_cost
-    }
-    return render(request, 'cart.html', context)
+        context = {
+            'cart_items': cart_items,
+            'cart_item_count': cart_item_count,
+            'cart': cart,
+            'total_cost': total_cost
+        }
+        return render(request, 'cart.html', context)
 
 
+@login_required(login_url='login')
 def add_cart_item(request, jewelry_id):
     if request.method == 'POST':
         jewelry = Jewelry.objects.get(pk=jewelry_id)
-        cart = Cart.objects.all()[0]
+        cart = Cart.objects.get(user=request.user.id)
         cart_item = CartItem(cart=cart, jewelry=jewelry, order_quantity=1, sub_total=jewelry.price)
         cart_item.save()
         return redirect('cart')
 
 
+@login_required(login_url='login')
 def delete_cart_item(request, cart_item_id):
     if request.method == 'POST':
         cart_item = CartItem.objects.get(id=cart_item_id)
@@ -72,9 +84,9 @@ def delete_cart_item(request, cart_item_id):
         return redirect('cart')
 
 
+@login_required(login_url='login')
 def update_cart_item(request, cart_item_id):
     if request.method == 'POST':
-        print(request.POST['order-quantity'])
         if int(request.POST['order-quantity']) == 0:
             delete_cart_item(request, cart_item_id)
             return redirect('cart')
@@ -87,79 +99,85 @@ def update_cart_item(request, cart_item_id):
 
 
 def shop_page(request):
-    jewelry = Jewelry.objects.all().order_by('-sold')
-    cart = Cart.objects.all()[0]
-    cart_item_count = CartItem.objects.all().count()
+    if request.method == 'GET':
+        jewelry = Jewelry.objects.all().order_by('-sold')
 
-    (filtered_jewelry, category_options, metal_options, stone_options) = filter_jewelry(request, jewelry)
-    (sorted_jewelry, sort_option) = sort_jewelry(request, filtered_jewelry)
+        (filtered_jewelry, category_options, metal_options, stone_options) = filter_jewelry(request, jewelry)
+        (sorted_jewelry, sort_option) = sort_jewelry(request, filtered_jewelry)
 
-    paginator = Paginator(sorted_jewelry, 16)
-    page = request.GET.get('page')
-    paged_jewelry = paginator.get_page(page)
+        paginator = Paginator(sorted_jewelry, 16)
+        page = request.GET.get('page')
+        paged_jewelry = paginator.get_page(page)
 
-    context = {
-        'jewelry': paged_jewelry,
-        'cart': cart,
-        'cart_item_count': cart_item_count,
-        'sort_option': sort_option,
-        'category_options': category_options,
-        'metal_options': metal_options,
-        'stone_options': stone_options
-    }
+        context = {
+            'jewelry': paged_jewelry,
+            'sort_option': sort_option,
+            'category_options': category_options,
+            'metal_options': metal_options,
+            'stone_options': stone_options
+        }
 
-    return render(request, 'shop.html', context)
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user.id)
+            cart_item_count = CartItem.objects.filter(cart=cart.id).count()
+            context['cart'] = cart
+            context['cart_item_count'] = cart_item_count
+
+        return render(request, 'shop.html', context)
 
 
 def filter_jewelry(request, jewelry):
-    category_options = []
-    metal_options = []
-    stone_options = []
-    if 'category' in request.GET:
-        category_options = request.GET.getlist('category')
-        jewelry = jewelry.filter(category__in=category_options)
-    if 'metal' in request.GET:
-        metal_options = request.GET.getlist('metal')
-        jewelry = jewelry.filter(metal__overlap=metal_options)
-    if 'stone' in request.GET:
-        stone_options = request.GET.getlist('stone')
-        jewelry = jewelry.filter(stone__overlap=stone_options)
-    return (jewelry, category_options, metal_options, stone_options)
+    if request.method == 'GET':
+        category_options = []
+        metal_options = []
+        stone_options = []
+        if 'category' in request.GET:
+            category_options = request.GET.getlist('category')
+            jewelry = jewelry.filter(category__in=category_options)
+        if 'metal' in request.GET:
+            metal_options = request.GET.getlist('metal')
+            jewelry = jewelry.filter(metal__overlap=metal_options)
+        if 'stone' in request.GET:
+            stone_options = request.GET.getlist('stone')
+            jewelry = jewelry.filter(stone__overlap=stone_options)
+        return (jewelry, category_options, metal_options, stone_options)
 
 
 def sort_jewelry(request, jewelry):
-    sorted_jewelry = jewelry.order_by('-sold')
-    sort_option = 'best-selling'
-    if 'sort-option' in request.GET:
-        sort_option = request.GET['sort-option']
-        if sort_option == 'best-selling':
-            return (sorted_jewelry, sort_option)
-        elif sort_option == 'a-z':
-            sorted_jewelry = jewelry.order_by('name')
-        elif sort_option == 'z-a':
-            sorted_jewelry = jewelry.order_by('-name')
-        elif sort_option == 'low-high':
-            sorted_jewelry = jewelry.order_by('price')
-        elif sort_option == 'high-low':
-            sorted_jewelry = jewelry.order_by('-price')
-        elif sort_option == 'old-new':
-            sorted_jewelry = jewelry.order_by('date_added')
-        elif sort_option == 'new-old':
-            return jewelry.order_by('-date_added')
-    return (sorted_jewelry, sort_option)
+    if request.method == 'GET':
+        sorted_jewelry = jewelry.order_by('-sold')
+        sort_option = 'best-selling'
+        if 'sort-option' in request.GET:
+            sort_option = request.GET['sort-option']
+            if sort_option == 'best-selling':
+                return (sorted_jewelry, sort_option)
+            elif sort_option == 'a-z':
+                sorted_jewelry = jewelry.order_by('name')
+            elif sort_option == 'z-a':
+                sorted_jewelry = jewelry.order_by('-name')
+            elif sort_option == 'low-high':
+                sorted_jewelry = jewelry.order_by('price')
+            elif sort_option == 'high-low':
+                sorted_jewelry = jewelry.order_by('-price')
+            elif sort_option == 'old-new':
+                sorted_jewelry = jewelry.order_by('date_added')
+            elif sort_option == 'new-old':
+                return jewelry.order_by('-date_added')
+        return (sorted_jewelry, sort_option)
 
 
 def jewelry_page(request, jewelry_id):
-    jewelry = Jewelry.objects.get(pk=jewelry_id)
-    cart = Cart.objects.all()[0]
-    cart_item_count = Cart.objects.all()[0]
+    if request.method == 'GET':
+        jewelry = Jewelry.objects.get(pk=jewelry_id)
+        context = {'jewelry': jewelry}
 
-    context = {
-        'jewelry': jewelry,
-        'cart': cart,
-        'cart_item_count': cart_item_count
-    }
-    return render(request, 'jewelry.html', context)
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user.id)
+            cart_item_count = CartItem.objects.filter(cart=cart.id).count()
+            context['cart'] = cart
+            context['cart_item_count'] = cart_item_count
+
+        return render(request, 'jewelry.html', context)
 
 
 # PAYMENT ////////////////////////////////
@@ -205,8 +223,9 @@ def login_page(request):
 
 
 def logout_user(request):
-    logout(request)
-    return redirect('login')
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect('login')
 
 
 def register(request):
@@ -214,15 +233,25 @@ def register(request):
         return redirect('index')
 
     form = CreateUserForm()
+    form2 = CreateAddressForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
+        form2 = CreateAddressForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Account created successfully!')
-            return redirect('login')
+            if form2.is_valid():
+                new_user = form.save()
+                user = User.objects.get(pk=new_user.id)
+                user_address = form2.save(commit=False)
+                user_address.user = user
+                user_address.save()
+                cart = Cart(user=user)
+                cart.save()
+                messages.success(request, 'Account created successfully!')
+                return redirect('login')
 
     context = {
         'form': form,
+        'form2': form2,
         'messages': messages
     }
     return render(request, 'register.html', context)

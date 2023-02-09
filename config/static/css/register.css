@@ -25,7 +25,8 @@ form section:last-child {
     padding-top: 0;
 }
 
-form input {
+form input,
+form select {
     padding: 0.25rem;
 }
 

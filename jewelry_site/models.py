@@ -1,5 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
+from django_countries.fields import CountryField
+from django_countries import countries
 
 
 class Jewelry(models.Model):
@@ -21,10 +24,10 @@ class Jewelry(models.Model):
 
 
 class Cart(models.Model):
-    user = models.CharField(max_length=50)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 
 class CartItem(models.Model):
@@ -32,3 +35,20 @@ class CartItem(models.Model):
     jewelry = models.ForeignKey(Jewelry, on_delete=models.CASCADE)
     order_quantity = models.PositiveIntegerField()
     sub_total = models.DecimalField(max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.jewelry.name
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    unit = models.CharField(max_length=100, null=True, blank=True)
+    building = models.CharField(max_length=100, null=True, blank=True)
+    street = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    country = CountryField()
+    area_code = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user.username

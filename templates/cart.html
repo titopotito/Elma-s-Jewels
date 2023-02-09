@@ -50,7 +50,8 @@
                     <input type="number" min="0" value="{{ cart_item.order_quantity }}" name="order-quantity" />
                     <button class="fas fa-angle-down"></button>
                 </form>
-                <form action="/cart/delete_cart_item/{{ cart_item.id }}" method="delete">
+                <form action="/cart/delete_cart_item/{{ cart_item.id }}" method="post">
+                    {% csrf_token %}
                     <button type="submit" class="fas fa-trash-alt"></button>
                 </form>
             </div>

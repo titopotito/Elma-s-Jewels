@@ -9,9 +9,16 @@
             <a href="{% url 'contact' %}">CONTACT</a>
         </div>
         <div>
-            <a href="{% url 'cart' %}" class="fas fa-shopping-cart">
-                <span id="count-pill"><span>{{ cart_item_count }}</span></span>
-            </a>
+            <!-- SHOPPING CART -->
+            {% if user.is_authenticated %}
+            <a href="{% url 'cart' %}" class="fas fa-shopping-cart"
+                ><span id="count-pill"><span>{{ cart_item_count }}</span></span></a
+            >
+            {% else %}
+            <a href="{% url 'login' %}" class="fas fa-shopping-cart"></a>
+            {% endif %}
+
+            <!-- USER MENU -->
             {% if user.is_authenticated %}
             <a class="fas fa-user-alt" id="user-menu-btn">
                 <span>{{ user.username }}</span>

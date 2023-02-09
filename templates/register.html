@@ -26,24 +26,33 @@
         <section>
             <h3>Address Details</h3>
             <div>
-                <label for="street">Street</label>
-                <input type="text" id="street" name="street" />
+                <label for="{{ form2.unit.label }}">Room / Floor</label>
+                {{ form2.unit }}
             </div>
             <div>
-                <label for="city">City</label>
-                <input type="text" id="city" name="city" />
+                <label for="{{ form2.building.label }}">Building / House</label>
+                {{ form2.building }}
             </div>
             <div>
-                <label for="state-province">State/Province</label>
-                <input type="text" id="state-province" name="state-province" />
+                <label for="{{ form2.street.label }}">Street / Road / Block / etc.</label>
+                {{ form2.street }}
+            </div>
+            <div>
+                <label for="{{ form2.city.label }}">City / Town / Municipality / Village</label>
+                {{ form2.city }}
+            </div>
+            <div>
+                <label for="{{ form2.region.label }}">Region / State / Province</label>
+                {{ form2.region }}
+            </div>
+
+            <div>
+                <label for="{{ form2.area_code.label }}">Postal Code / Zip Code</label>
+                {{ form2.area_code }}
             </div>
             <div>
                 <label for="country">Country</label>
-                <input type="text" id="country" name="country" />
-            </div>
-            <div>
-                <label for="zip-code">Zip Code</label>
-                <input type="number" id="zip-code" name="zip-code" />
+                {{ form2.country }}
             </div>
         </section>
         <section>
@@ -54,7 +63,6 @@
         </section>
     </form>
 </main>
-{% include 'partials/footer.html' %}
 <script src="{% static 'js/header.js' %}"></script>
 <!-- #### -->
 {% endblock %}
