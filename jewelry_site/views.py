@@ -3,9 +3,9 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Jewelry, CartItem, Cart, Address
+from .models import Jewelry, CartItem, Cart, Address, ContactDetail
 from django.contrib.auth.models import User
-from .forms import CreateUserForm, CreateAddressForm
+from .forms import CreateUserForm, CreateAddressForm, CreatePhoneNumberForm
 
 
 def index(request):
@@ -182,17 +182,27 @@ def jewelry_page(request, jewelry_id):
 
 # PAYMENT ////////////////////////////////
 @login_required(login_url='login')
-def add_to_checkout(request, cart_id):
-    return redirect('checkout', cart_id=cart_id)
+def checkout(request):
 
+    if request.method == 'GET':
+        checkout_item_ids = request.GET.getlist('checkout-item-ids')
+        checkout_items = CartItem.objects.filter(id__in=checkout_item_ids)
+        address = Address.objects.get(user=request.user.id)
+        phone_number = ContactDetail.objects.get(user=request.user.id).phone_number
 
-@login_required(login_url='login')
-def checkout(request, cart_id):
-    return render(request, 'checkout.html')
+        total_cost = 0
+        if checkout_items.count() > 0:
+            for checkout_item in checkout_items:
+                total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
 
+        context = {
+            'checkout_items': checkout_items,
+            'total_cost': total_cost,
+            'address': address,
+            'phone_number': phone_number
+        }
 
-def payment(request):
-    return render(request, 'payment.html')
+        return render(request, 'checkout.html', context)
 
 
 def shipping(request):
@@ -234,24 +244,35 @@ def register(request):
 
     form = CreateUserForm()
     form2 = CreateAddressForm()
+    form3 = CreatePhoneNumberForm(request.POST)
+
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         form2 = CreateAddressForm(request.POST)
+        form3 = CreatePhoneNumberForm(request.POST)
+        for field in form:
+            print("Field Error:", field.name,  field.errors)
+
         if form.is_valid():
             if form2.is_valid():
-                new_user = form.save()
-                user = User.objects.get(pk=new_user.id)
-                user_address = form2.save(commit=False)
-                user_address.user = user
-                user_address.save()
-                cart = Cart(user=user)
-                cart.save()
-                messages.success(request, 'Account created successfully!')
-                return redirect('login')
+                if form3.is_valid():
+                    new_user = form.save()
+                    user = User.objects.get(pk=new_user.id)
+                    address = form2.save(commit=False)
+                    address.user = user
+                    address.save()
+                    phone_number = form3.save(commit=False)
+                    phone_number.user = user
+                    phone_number.save()
+                    cart = Cart(user=user)
+                    cart.save()
+                    messages.success(request, 'Account created successfully!')
+                    return redirect('login')
 
     context = {
         'form': form,
         'form2': form2,
+        'form3': form3,
         'messages': messages
     }
     return render(request, 'register.html', context)

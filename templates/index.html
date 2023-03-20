@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'base.html' %} {% load static %} {% load humanize %}
 <!-- ### -->
 
 {% block extrahead %}
@@ -17,37 +17,25 @@
         <div>
             <a href="/shop?category=rings" method="get">
                 <figure>
-                    <img
-                        src="{% static 'images/others/kateryna-hliznitsova-orila32ay5U-unsplash.jpg' %}"
-                        alt=""
-                    />
+                    <img src="{% static 'images/others/kateryna-hliznitsova-orila32ay5U-unsplash.jpg' %}" alt="" />
                     <figcaption>RINGS</figcaption>
                 </figure></a
             >
             <a href="/shop?category=necklaces" method="get">
                 <figure>
-                    <img
-                        src="{% static 'images/others/andie-gomez-acebo-sEq4onJnWrI-unsplash.jpg' %}"
-                        alt=""
-                    />
+                    <img src="{% static 'images/others/andie-gomez-acebo-sEq4onJnWrI-unsplash.jpg' %}" alt="" />
                     <figcaption>NECKLACES</figcaption>
                 </figure></a
             >
             <a href="/shop?category=earrings" method="get">
                 <figure>
-                    <img
-                        src="{% static 'images/others/patricia-zavala-3tP-noTcaE8-unsplash.jpg' %}"
-                        alt=""
-                    />
+                    <img src="{% static 'images/others/patricia-zavala-3tP-noTcaE8-unsplash.jpg' %}" alt="" />
                     <figcaption>EARRINGS</figcaption>
                 </figure></a
             >
             <a href="/shop?category=bracelets" method="get">
                 <figure>
-                    <img
-                        src="{% static 'images/others/sama-hosseini-h_ssRPj8UZo-unsplash.jpg' %}"
-                        alt=""
-                    />
+                    <img src="{% static 'images/others/sama-hosseini-h_ssRPj8UZo-unsplash.jpg' %}" alt="" />
                     <figcaption>BRACELETS</figcaption>
                 </figure>
             </a>
@@ -63,7 +51,7 @@
                         <img src="{{ best_seller.image.url }}" alt="" />
                         <h3>{{ best_seller.name }}</h3>
                         <p>
-                            <data value="{{ best_seller.price }}">$ {{ best_seller.price }}</data>
+                            <data value="{{ best_seller.price }}">$ {{ best_seller.price | intcomma}}</data>
                         </p>
                     </a>
                 </article>

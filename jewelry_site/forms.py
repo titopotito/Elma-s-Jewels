@@ -1,14 +1,16 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Address
+from .models import Address, ContactDetail
 from django_countries.fields import CountryField
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['first_name', 'username', 'email', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
 
 class CreateAddressForm(ModelForm):
@@ -17,3 +19,10 @@ class CreateAddressForm(ModelForm):
     class Meta:
         model = Address
         fields = ['unit', 'building', 'street', 'city', 'region', 'area_code', 'country']
+
+
+class CreatePhoneNumberForm(ModelForm):
+
+    class Meta:
+        model = ContactDetail
+        fields = ['phone_number']

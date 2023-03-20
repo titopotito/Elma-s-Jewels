@@ -25,11 +25,6 @@ urlpatterns = [
 
     ])),
 
-    path('checkout', include([
-        path('/<int:cart_id>', views.checkout, name='checkout'),
-        path('/add_to_checkout/<int:cart_id>', views.add_to_checkout, name='add_to_checkout')
-    ])),
-
+    path('checkout', views.checkout, name='checkout'),
     path('shipping', views.shipping, name='shipping'),
-    path('payment', views.payment, name='payment')
 ]

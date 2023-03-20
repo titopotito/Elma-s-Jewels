@@ -9,25 +9,27 @@ main * {
     color: #483434;
 }
 
-form {
-    width: 80%;
-    max-width: 80ch;
-    padding: 1rem;
-}
-
 form div {
     display: flex;
     flex-direction: column;
-    margin: 1rem;
+    margin: 2rem 0;
 }
 
 form section:last-child {
     padding-top: 0;
 }
 
+form label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: rgb(43, 42, 42);
+}
+
 form input,
 form select {
-    padding: 0.25rem;
+    padding: 0.4rem;
+    font-size: 1rem;
+    max-width: 30ch;
 }
 
 form button {
@@ -46,4 +48,7 @@ form button:hover,
 form a:hover {
     cursor: pointer;
     opacity: 0.8;
+}
+
+@media screen and (min-width: 768px) {
 }

@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'base.html' %} {% load static %} {% load humanize %}
 <!-- ### -->
 
 {% block extrahead %}
@@ -27,16 +27,16 @@
         {% if cart_items|length > 0 %} {% for cart_item in cart_items %}
 
         <li class="cart-items">
-            <form class="cart-checkbox">
-                <input class="checkbox" name="checkbox" type="checkbox" checked="true" />
-            </form>
+            <div class="cart-checkbox">
+                <input class="checkbox" name="checkbox" type="checkbox" checked="true" value="{{ cart_item.id }}" />
+            </div>
             <figure class="cart-item">
                 <img src="{{ cart_item.jewelry.image.url }}" alt="" />
                 <figcaption>{{ cart_item.jewelry.name }}</figcaption>
             </figure>
             <div class="cart-price">
                 <span>Price: </span>
-                $ {{ cart_item.jewelry.price }}
+                $ {{ cart_item.jewelry.price|intcomma }}
             </div>
             <div class="cart-quantity">
                 <span>Quantity: </span>
@@ -57,7 +57,7 @@
             </div>
             <div class="cart-total">
                 <span>Total: </span>
-                $ {% widthratio cart_item.jewelry.price 1 cart_item.order_quantity %}
+                $ {% widthratio cart_item.jewelry.price 1 cart_item.order_quantity as total %} {{ total | intcomma }}
             </div>
         </li>
         <hr />
@@ -65,16 +65,16 @@
         <p>NO ITEMS IN CART</p>
         {% endif %}
     </ul>
-    <form id="cart-checkout-section" action="checkout/add_to_checkout/{{ cart.id }}" method="POST">
-        {% csrf_token %}
+    <form id="cart-checkout-section" action="{% url 'checkout' %}" method="get">
+        <!-- {% csrf_token %} -->
         <div>
             <label>Add Order Note</label>
             <textarea name="" id="" cols="30" rows="10"></textarea>
         </div>
         <div>
-            <p><span>SUBTOTAL:</span><strong>$ {{ total_cost }}</strong></p>
+            <p><span>SUBTOTAL:</span><strong>$ {{ total_cost | intcomma }}</strong></p>
             <p><em>Shipping & taxes calculated at checkout.</em></p>
-            <button type="submit"><i class="fas fa-shopping-bag"> </i> CHECKOUT</button>
+            <button id="checkout-btn"><i class="fas fa-shopping-bag"> </i> CHECKOUT</button>
         </div>
     </form>
 </main>

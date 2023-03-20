@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jewelry_site',
-    'django_countries'
+    'django.contrib.humanize',
+    'django_countries',
+    'phonenumber_field',
+    'jewelry_site'
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# CROSS ORIGIN
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

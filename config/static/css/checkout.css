@@ -1,0 +1,217 @@
+main {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff3e4;
+    padding: 0 0.5rem;
+}
+
+section * {
+    color: black;
+}
+
+h2 {
+    color: black;
+}
+
+hr {
+    margin: 1rem 0;
+}
+
+#order-summary-section {
+    border: 1px solid black;
+    margin: 0 1rem;
+}
+
+#order-summary-section li {
+    display: grid;
+    grid-template-columns: 6.25fr 1.5fr 2.25fr;
+    margin: 2rem 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+#order-summary-section figure {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+#order-summary-section figure img {
+    width: 8ch;
+}
+
+#order-summary-section figcaption {
+    text-transform: capitalize;
+    color: rgb(43, 42, 42);
+}
+
+#order-summary-section .checkout-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(43, 42, 42);
+}
+
+#order-summary-section .checkout-price {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: rgb(43, 42, 42);
+}
+
+#order-summary-section #total-cost-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+}
+
+.form-control label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: rgb(43, 42, 42);
+}
+
+.form-control input {
+    padding: 0.4rem;
+    font-size: 1rem;
+}
+
+@media screen and (min-width: 480px) {
+    main {
+        padding: 0 4rem;
+    }
+}
+
+@media screen and (min-width: 640px) {
+    main {
+        padding: 0 6rem;
+    }
+
+    #order-summary-section li {
+        font-size: 0.9rem;
+    }
+
+    #contact-detail-section {
+        display: grid;
+        column-gap: 1.5rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "h3 empty"
+            "firstname lastname"
+            "email contact";
+    }
+
+    #contact-detail-section h3 {
+        grid-area: h3;
+    }
+
+    #contact-detail-section div:nth-child(2) {
+        grid-area: firstname;
+    }
+
+    #contact-detail-section div:nth-child(3) {
+        grid-area: lastname;
+    }
+
+    #contact-detail-section div:nth-child(4) {
+        grid-area: email;
+    }
+
+    #contact-detail-section div:nth-child(5) {
+        grid-area: contact;
+    }
+
+    #shipping-detail-section {
+        display: grid;
+        column-gap: 1.5rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "h3 empty"
+            "country empty"
+            "region- city"
+            "street building"
+            "room area-code";
+    }
+
+    #shipping-detail-section h3 {
+        grid-area: h3;
+    }
+
+    #shipping-detail-section div:nth-child(2) {
+        grid-area: country;
+    }
+    #shipping-detail-section div:nth-child(3) {
+        grid-area: region-;
+    }
+    #shipping-detail-section div:nth-child(4) {
+        grid-area: city;
+    }
+    #shipping-detail-section div:nth-child(5) {
+        grid-area: street;
+    }
+    #shipping-detail-section div:nth-child(6) {
+        grid-area: building;
+    }
+    #shipping-detail-section div:nth-child(7) {
+        grid-area: room;
+    }
+    #shipping-detail-section div:nth-child(8) {
+        grid-area: area-code;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    main {
+        padding: 0 8rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    h2 {
+        margin-bottom: 2rem;
+    }
+
+    main {
+        padding: 0 6rem;
+    }
+
+    main form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "contact-details order-summary"
+            "shipping-details order-summary"
+            "submit-checkout order-summary";
+    }
+
+    #order-summary-section {
+        grid-area: order-summary;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #contact-detail-section {
+        grid-area: contact-details;
+        column-gap: 1rem;
+    }
+
+    #shipping-detail-section {
+        grid-area: shipping-details;
+        column-gap: 1rem;
+    }
+
+    #submit-checkout-section {
+        grid-area: submit-checkout;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    main {
+        padding: 0 16rem;
+    }
+}

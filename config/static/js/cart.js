@@ -18,22 +18,39 @@ for (form of updateOrderQuantityForms) {
     });
 }
 
-const cartCheckBox = document.getElementsByClassName("checkbox");
+const cartCheckbox = document.getElementsByClassName("checkbox");
 
-cartCheckBox[0].addEventListener("click", function (e) {
-    for (let i = 1; i < cartCheckBox.length; i++) {
-        cartCheckBox[i].checked = this.checked;
+cartCheckbox[0].addEventListener("click", function (e) {
+    for (let i = 1; i < cartCheckbox.length; i++) {
+        cartCheckbox[i].checked = this.checked;
     }
 });
 
-for (let i = 1; i < cartCheckBox.length; i++) {
-    cartCheckBox[i].addEventListener("click", function (e) {
-        for (let i = 1; i < cartCheckBox.length; i++) {
-            if (cartCheckBox[i].checked == false) {
-                cartCheckBox[0].checked = false;
+for (let i = 1; i < cartCheckbox.length; i++) {
+    cartCheckbox[i].addEventListener("click", function (e) {
+        for (let i = 1; i < cartCheckbox.length; i++) {
+            if (cartCheckbox[i].checked == false) {
+                cartCheckbox[0].checked = false;
                 return;
             }
-            cartCheckBox[0].checked = true;
+            cartCheckbox[0].checked = true;
         }
     });
 }
+
+const checkoutBtn = document.getElementById("checkout-btn");
+
+checkoutBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    cartCheckoutForm = document.getElementById("cart-checkout-section");
+    for (let i = 1; cartCheckbox.length > i; i++) {
+        if (cartCheckbox[i].checked == true) {
+            let checkoutItem = document.createElement("input");
+            checkoutItem.type = "hidden";
+            checkoutItem.name = "checkout-item-ids";
+            checkoutItem.value = cartCheckbox[i].value;
+            cartCheckoutForm.appendChild(checkoutItem);
+        }
+    }
+    cartCheckoutForm.submit();
+});

@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'base.html' %} {% load static %} {% load humanize %}
 <!-- #### -->
 
 {% block extrahead %}
@@ -174,7 +174,7 @@
                 <a href="/shop/jewelry/{{ jewelry.id }}">
                     <img src="{{ jewelry.image.url }}" alt="" />
                     <h3>{{ jewelry.name }}</h3>
-                    <p><data value="{{ jewelry.price }}">$ {{ jewelry.price }}</data></p>
+                    <p><data value="{{ jewelry.price }}">$ {{ jewelry.price | intcomma }}</data></p>
                 </a>
             </article>
         </li>

@@ -1,53 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-    </head>
-    <body>
-        <header>CHECKOUT</header>
-        <main>
-            <form action="">
-                <div>
-                    <label for="contact">Contact No: </label>
-                    <input type="text" name="contact" id="contact" />
-                </div>
-                <div>
-                    <label for="email">Email: </label>
-                    <input type="text" name="email" id="email" />
-                </div>
-                <div>
-                    <label for="firstname">First Name: </label>
-                    <input type="text" name="firstname" id="firstname" />
-                </div>
-                <div>
-                    <label for="lastname">Last Name: </label>
-                    <input type="text" name="lastname" id="lastname" />
-                </div>
-                <div>
-                    <label for="country">Country: </label>
-                    <input type="text" name="country" id="country" />
-                </div>
-                <div>
-                    <label for="address">Address: </label>
-                    <input type="text" name="address" id="address" />
-                </div>
-                <div>
-                    <label for="city">City: </label>
-                    <input type="text" name="city" id="city" />
-                </div>
-                <div>
-                    <label for="state-province">State / Province: </label>
-                    <input type="text" name="state-province" id="state-province" />
-                </div>
-                <div>
-                    <label for="zip-postal">Zip Code / Postal Code: </label>
-                    <input type="text" name="zip-postal" id="zip-postal" />
-                </div>
-                <button type="submit">Continue to Shipping</button>
-            </form>
-        </main>
-    </body>
-</html>
+{% extends 'base.html' %} {% load static %} {% load humanize %}
+<!-- ### -->
+
+{% block extrahead %}
+<meta name="description" content="Elma's Jewels Checkout Page" />
+<link rel="stylesheet" href="{% static 'css/all.css' %}" />
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
+<title>ELMA'S JEWEL | CHECKOUT</title>
+{% endblock %}
+
+<!-- ##### -->
+
+{% block content %}
+<!-- #### -->
+{% include 'partials/header2.html' %}
+<main>
+    <h2>CHECKOUT</h2>
+    <form action="">
+        {% csrf_token %}
+        <section id="order-summary-section">
+            <h3>Order Summary:</h3>
+            <ul>
+                <li>
+                    <div class="checkout-item"><strong>Item</strong></div>
+                    <div class="checkout-quantity"><strong>Qty</strong></div>
+                    <div class="checkout-price"><strong>Price</strong></div>
+                </li>
+                {% for checkout_item in checkout_items %}
+                <li class="checkout-items">
+                    <figure class="checkout-item">
+                        <img src="{{ checkout_item.jewelry.image.url }}" alt="" />
+                        <figcaption>{{ checkout_item.jewelry.name }}</figcaption>
+                    </figure>
+                    <div class="checkout-quantity">
+                        <span>{{ checkout_item.order_quantity }} </span>
+                    </div>
+                    <div class="checkout-price">$ {{ checkout_item.jewelry.price | intcomma }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+            <hr />
+            <div id="total-cost-container">
+                <strong>Total:</strong><strong>$ {{ total_cost | intcomma }}</strong>
+                <input type="hidden" id="total-cost" value="{{ total_cost }}" />
+            </div>
+        </section>
+        <section id="contact-detail-section">
+            <h3>Contact Details:</h3>
+            <div class="form-control">
+                <label for="firstname">First Name: </label>
+                <input type="text" name="firstname" id="firstname" value="{{ user.first_name}}" />
+            </div>
+            <div class="form-control">
+                <label for="lastname">Last Name: </label>
+                <input type="text" name="lastname" id="lastname" value="{{ user.last_name }}" />
+            </div>
+            <div class="form-control">
+                <label for="email">Email: </label>
+                <input type="text" name="email" id="email" value="{{ user.email }}" />
+            </div>
+            <div class="form-control">
+                <label for="contact">Contact No: </label>
+                <input type="text" name="contact" id="contact" value="{{ phone_number }}" />
+            </div>
+        </section>
+        <section id="shipping-detail-section">
+            <h3>Shipping Details:</h3>
+            <div class="form-control">
+                <label for="country">Country: </label>
+                <input type="text" name="country" id="country" value="{{ address.country.name }}" />
+            </div>
+            <div class="form-control">
+                <label for="region">Region / State / Province: </label>
+                <input type="text" name="region" id="region" value="{{ address.region }}" />
+            </div>
+            <div class="form-control">
+                <label for="city">City / Town / Village: </label>
+                <input type="text" name="city" id="city" value="{{ address.city }}" />
+            </div>
+            <div class="form-control">
+                <label for="street">Street / Road / Block: </label>
+                <input type="text" name="street" id="street" value="{{ address.street }}" />
+            </div>
+            <div class="form-control">
+                <label for="building">Building / House: </label>
+                <input type="text" name="building" id="building" value="{{ address.building }}" />
+            </div>
+            <div class="form-control">
+                <label for="unit">Room / Floor: </label>
+                <input type="text" name="unit" id="unit" value="{{ address.unit }}" />
+            </div>
+            <div class="form-control">
+                <label for="area-code">Postal Code / Zip Code: </label>
+                <input type="text" name="area-code" id="area-code" value="{{ address.area_code }}" />
+            </div>
+        </section>
+        <section id="submit-checkout-section">
+            <div id="paypal-button-container"></div>
+            <!-- <button type="submit">Checkout</button> -->
+        </section>
+    </form>
+</main>
+
+{% include 'partials/footer.html' %}
+<script src="https://www.paypal.com/sdk/js?client-id=ARhnKPisLotlFscxayXveJtOjhKTMTt9IA6ejYOdgYPE0-v0W-GBkwpd_j3bmq7-5D1Gl0Wl_QmrT0mK"></script>
+<script>
+    // Render the PayPal button into #paypal-button-container
+
+    const value = document.getElementById("total-cost").value;
+    paypal
+        .Buttons({
+            // Set up the transaction
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [
+                        {
+                            amount: {
+                                value: value,
+                            },
+                        },
+                    ],
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (orderData) {
+                    // Successful capture! For demo purposes:
+                    console.log("Capture result", orderData, JSON.stringify(orderData, null, 2));
+                    var transaction = orderData.purchase_units[0].payments.captures[0];
+                    alert(
+                        "Transaction " +
+                            transaction.status +
+                            ": " +
+                            transaction.id +
+                            "\n\nSee console for all available details"
+                    );
+
+                    // Replace the above to show a success message within this page, e.g.
+                    // const element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '';
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+            },
+        })
+        .render("#paypal-button-container");
+</script>
+<script src="{% static 'js/header.js' %}"></script>
+<!-- #### -->
+{% endblock %}
