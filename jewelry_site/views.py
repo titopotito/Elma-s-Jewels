@@ -1,12 +1,15 @@
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.core.paginator import Paginator
+# DJANGO MODULES
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import Jewelry, CartItem, Cart, Address, ContactDetail, Order, OrderItem
 from django.contrib.auth.models import User
-from .forms import CreateUserForm, CreateAddressForm, CreatePhoneNumberForm
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+
+# LOCAL MODULES
+from .forms import CreateAddressForm, CreatePhoneNumberForm, CreateUserForm
+from .models import Address, Cart, ContactDetail, CartItem, Jewelry, Order, OrderItem
 from .paypal import PayPalClient
 
 

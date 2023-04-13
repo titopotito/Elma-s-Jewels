@@ -1,9 +1,14 @@
+# STANDARD MODULE
 import uuid
-from django.db import models
-from django.contrib.auth.models import User
-from django.contrib.postgres.fields import ArrayField
+
+# THIRD PARTY MODULES
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
+
+# DJANGO MODULES
+from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 
 
 class Jewelry(models.Model):

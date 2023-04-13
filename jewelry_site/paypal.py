@@ -1,7 +1,9 @@
+# STANDARD MODULES
 import base64
 import requests
 import json
-from .models import RequestID
+
+# LOCAL MODULES
 from config.settings import CLIENT_ID, CLIENT_SECRET
 
 
@@ -46,7 +48,6 @@ class PayPalClient:
 
         headers = {
             'Content-Type': 'application/json',
-            # 'PayPal-Request-Id': str(RequestID.objects.create().id),
             'Authorization': 'Basic ' + self.base64_message,
         }
 
@@ -86,7 +87,6 @@ class PayPalClient:
     def authorize_payment_order(self, order_id):
         headers = {
             'Content-Type': 'application/json',
-            # 'PayPal-Request-Id': str(RequestID.objects.create().id),
             'Authorization': 'Basic ' + self.base64_message,
         }
 
@@ -99,7 +99,6 @@ class PayPalClient:
 
         headers = {
             'Content-Type': 'application/json',
-            # 'PayPal-Request-Id': str(RequestID.objects.create().id),
             'Authorization': 'Basic ' + self.base64_message,
         }
 

@@ -26,9 +26,12 @@ urlpatterns = [
 
     ])),
 
-    path('checkout', views.checkout, name='checkout'),
-    path('checkout/create_order', views.create_order, name='create_order'),
-    path('checkout/payment_complete/<str:order_id>', views.payment_complete, name='payment_complete'),
-    path('checkout/payment_successful', views.payment_successful, name='payment_successful'),
+    path('checkout', include([
+        path('', views.checkout, name='checkout'),
+        path('/create_order', views.create_order, name='create_order'),
+        path('/payment_complete/<str:order_id>', views.payment_complete, name='payment_complete'),
+        path('/payment_successful', views.payment_successful, name='payment_successful'),
+    ])),
+
     path('shipping', views.shipping, name='shipping'),
 ]

@@ -1,10 +1,13 @@
+# THIRD PARTY MODULE
+from django_countries.fields import CountryField
+
+# DJANGO MODULES
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+
+# LOCAL MODULES
 from .models import Address, ContactDetail
-from django_countries.fields import CountryField
-from phonenumber_field.formfields import PhoneNumberField
-from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 
 class CreateUserForm(UserCreationForm):
