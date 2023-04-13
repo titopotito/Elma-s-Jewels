@@ -254,6 +254,36 @@ footer .fab:hover {
     opacity: 0.7;
 }
 
+.alert {
+    border-radius: 5px;
+    font-size: smaller;
+    padding: 0.8rem;
+}
+
+.alert-info {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: 1px solid #b8daff;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: 1px solid #c3e6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: 1px solid #ffeeba;
+}
+
 @media screen and (min-width: 480px) {
     #categories-section img {
         width: 48ch;

@@ -8,7 +8,6 @@ from .models import Jewelry, CartItem, Cart, Address, ContactDetail, Order, Orde
 from django.contrib.auth.models import User
 from .forms import CreateUserForm, CreateAddressForm, CreatePhoneNumberForm
 from .paypal import PayPalClient
-import json
 
 
 def index(request):
@@ -204,6 +203,9 @@ def checkout(request):
     if request.method == 'GET':
         cart = Cart.objects.get(user=request.user.id)
         checkout_items = CartItem.objects.filter(cart=cart, is_selected=True)
+        if checkout_items.count() == 0:
+            messages.error(request, 'There are no items to checkout.')
+            return redirect('cart')
         address = Address.objects.get(user=request.user.id)
         phone_number = ContactDetail.objects.get(user=request.user.id).phone_number
 
@@ -214,6 +216,7 @@ def checkout(request):
                     total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
 
         context = {
+            'cart_item_count': CartItem.objects.filter(cart=cart).count(),
             'checkout_items': checkout_items,
             'total_cost': total_cost,
             'address': address,
@@ -269,6 +272,7 @@ def payment_successful(request):
     return render(request, 'shipping.html')
 
 
+@login_required(login_url='login')
 def shipping(request):
     return render(request, 'shipping.html')
 
@@ -286,12 +290,11 @@ def login_page(request):
         if user is not None:
             login(request, user)
             return redirect('index')
-        else:
-            messages.info(request, 'Username or Password is not correct.')
+
+        messages.error(request, 'Username or Password is not correct.')
 
     context = {
         'cart_item_count': CartItem.objects.all().count(),
-        'messages': messages
     }
     return render(request, 'login.html', context)
 
@@ -314,8 +317,6 @@ def register(request):
         form = CreateUserForm(request.POST)
         form2 = CreateAddressForm(request.POST)
         form3 = CreatePhoneNumberForm(request.POST)
-        for field in form:
-            print("Field Error:", field.name,  field.errors)
 
         if form.is_valid():
             if form2.is_valid():
@@ -337,6 +338,5 @@ def register(request):
         'form': form,
         'form2': form2,
         'form3': form3,
-        'messages': messages
     }
     return render(request, 'register.html', context)
