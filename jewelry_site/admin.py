@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Jewelry, CartItem, Cart
+from .models import Jewelry, CartItem, Cart, Order, OrderItem
 
 
 class JewelryAdmin(admin.ModelAdmin):
@@ -23,6 +23,16 @@ class CartItemAdmin(admin.ModelAdmin):
         return obj.jewelry.price
 
 
+class OrderAdmin(admin.ModelAdmin):
+    fields = ['user', 'order_key', 'total_paid', 'payment_option']
+
+
+class OrderItemAdmin(admin.ModelAdmin):
+    fields = ['order', 'jewelry', 'price', 'quantity']
+
+
 admin.site.register(Jewelry, JewelryAdmin)
 admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem, CartItemAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)

@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Jewelry, CartItem, Cart, Address, ContactDetail
+from .models import Jewelry, CartItem, Cart, Address, ContactDetail, Order, OrderItem
 from django.contrib.auth.models import User
 from .forms import CreateUserForm, CreateAddressForm, CreatePhoneNumberForm
+from .paypal import PayPalClient
+import json
 
 
 def index(request):
@@ -55,7 +58,8 @@ def cart_page(request):
         total_cost = 0
         if cart_items.count() > 0:
             for cart_item in cart_items:
-                total_cost = total_cost + (cart_item.sub_total*cart_item.order_quantity)
+                if cart_item.is_selected == True:
+                    total_cost = total_cost + (cart_item.sub_total*cart_item.order_quantity)
 
         context = {
             'cart_items': cart_items,
@@ -92,6 +96,19 @@ def update_cart_item(request, cart_item_id):
             return redirect('cart')
         cart_item = CartItem.objects.get(id=cart_item_id)
         cart_item.order_quantity = request.POST['order-quantity']
+        cart_item.save()
+        return redirect('cart')
+
+
+@login_required(login_url='login')
+def toggle_checkbox(request, cart_item_id):
+    if request.method == 'POST':
+        cart_item = CartItem.objects.get(id=cart_item_id)
+        print(cart_item.is_selected)
+        if cart_item.is_selected == True:
+            cart_item.is_selected = False
+        else:
+            cart_item.is_selected = True
         cart_item.save()
         return redirect('cart')
 
@@ -185,15 +202,16 @@ def jewelry_page(request, jewelry_id):
 def checkout(request):
 
     if request.method == 'GET':
-        checkout_item_ids = request.GET.getlist('checkout-item-ids')
-        checkout_items = CartItem.objects.filter(id__in=checkout_item_ids)
+        cart = Cart.objects.get(user=request.user.id)
+        checkout_items = CartItem.objects.filter(cart=cart, is_selected=True)
         address = Address.objects.get(user=request.user.id)
         phone_number = ContactDetail.objects.get(user=request.user.id).phone_number
 
         total_cost = 0
         if checkout_items.count() > 0:
             for checkout_item in checkout_items:
-                total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
+                if checkout_item.is_selected:
+                    total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
 
         context = {
             'checkout_items': checkout_items,
@@ -203,6 +221,52 @@ def checkout(request):
         }
 
         return render(request, 'checkout.html', context)
+
+
+@login_required(login_url='login')
+def create_order(request):
+
+    cart = Cart.objects.get(user=request.user.id)
+    checkout_items = CartItem.objects.filter(cart=cart, is_selected=True)
+
+    PPClient = PayPalClient()
+    response = PPClient.create_order(checkout_items)
+
+    return JsonResponse(response, safe=False)
+
+
+@login_required(login_url='login')
+def payment_complete(request, order_id):
+
+    PPClient = PayPalClient()
+    response = PPClient.capture_payment_order(order_id)
+
+    print(response)
+    order = Order.objects.create(
+        user=User.objects.get(id=request.user.id),
+        phone=ContactDetail.objects.get(user=request.user.id),
+        address=Address.objects.get(user=request.user.id),
+        total_paid=response['purchase_units'][0]['payments']['captures'][0]['amount']['value'],
+        order_key=response['id'],
+        payment_option="paypal",
+    )
+
+    cart = Cart.objects.get(user=request.user.id)
+    cart_items = CartItem.objects.filter(cart=cart, is_selected=True)
+    for item in cart_items:
+        OrderItem.objects.create(order=order, jewelry=item.jewelry,
+                                 price=item.jewelry.price, quantity=item.order_quantity)
+
+    for item in cart_items:
+        item.delete()
+
+    return JsonResponse(response, safe=False)
+
+
+@login_required(login_url='login')
+def payment_successful(request):
+
+    return render(request, 'shipping.html')
 
 
 def shipping(request):

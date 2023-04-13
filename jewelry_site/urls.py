@@ -15,7 +15,8 @@ urlpatterns = [
         path('', views.cart_page, name='cart'),
         path('/add_cart_item/<int:jewelry_id>', views.add_cart_item, name='add_cart_item'),
         path('/delete_cart_item/<int:cart_item_id>', views.delete_cart_item, name='delete_cart_item'),
-        path('/update_cart_item/<int:cart_item_id>', views.update_cart_item, name='update_cart_item')
+        path('/update_cart_item/<int:cart_item_id>', views.update_cart_item, name='update_cart_item'),
+        path('/toggle_checkbox/<int:cart_item_id>', views.toggle_checkbox, name='toggle_checkbox')
     ])),
 
 
@@ -26,5 +27,8 @@ urlpatterns = [
     ])),
 
     path('checkout', views.checkout, name='checkout'),
+    path('checkout/create_order', views.create_order, name='create_order'),
+    path('checkout/payment_complete/<str:order_id>', views.payment_complete, name='payment_complete'),
+    path('checkout/payment_successful', views.payment_successful, name='payment_successful'),
     path('shipping', views.shipping, name='shipping'),
 ]
