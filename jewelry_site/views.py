@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 # LOCAL MODULES
-from .forms import CreateAddressForm, CreatePhoneNumberForm, CreateUserForm
+from .forms import CreateAddressForm, CreateUserForm
 from .models import Address, Cart, ContactDetail, CartItem, Jewelry, Order, OrderItem
 from .paypal import PayPalClient
 
@@ -31,14 +31,30 @@ def profile(request):
     if request.method == 'GET':
         cart = Cart.objects.get(user=request.user.id)
         cart_item_count = CartItem.objects.filter(cart=cart.id).count()
+        form = CreateAddressForm()
         address = Address.objects.get(user=request.user.id)
         context = {
             'cart': cart,
             'cart_item_count': cart_item_count,
-            'address': address
+            'address': address,
+            'address_form': form
         }
 
         return render(request, 'profile.html', context)
+
+
+@login_required(login_url='login')
+def add_address(request):
+    if request.method == 'POST':
+
+        form = CreateAddressForm(request.POST)
+        if form.is_valid():
+            user = User.objects.get(pk=request.user.id)
+            address = form.save(commit=False)
+            address.user = user
+            address.save()
+            messages.success(request, 'Address added successfully!')
+            return redirect('profile')
 
 
 def about(request):
@@ -206,24 +222,19 @@ def checkout(request):
     if request.method == 'GET':
         cart = Cart.objects.get(user=request.user.id)
         checkout_items = CartItem.objects.filter(cart=cart, is_selected=True)
-        if checkout_items.count() == 0:
+        if checkout_items.count() <= 0:
             messages.error(request, 'There are no items to checkout.')
             return redirect('cart')
-        address = Address.objects.get(user=request.user.id)
-        phone_number = ContactDetail.objects.get(user=request.user.id).phone_number
 
         total_cost = 0
-        if checkout_items.count() > 0:
-            for checkout_item in checkout_items:
-                if checkout_item.is_selected:
-                    total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
+        for checkout_item in checkout_items:
+            if checkout_item.is_selected:
+                total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
 
         context = {
             'cart_item_count': CartItem.objects.filter(cart=cart).count(),
             'checkout_items': checkout_items,
             'total_cost': total_cost,
-            'address': address,
-            'phone_number': phone_number
         }
 
         return render(request, 'checkout.html', context)
@@ -235,7 +246,7 @@ def create_order(request):
     cart = Cart.objects.get(user=request.user.id)
     checkout_items = CartItem.objects.filter(cart=cart, is_selected=True)
 
-    PPClient = PayPalClient()
+    PPClient = PayPalClient(request.user)
     response = PPClient.create_order(checkout_items)
 
     return JsonResponse(response, safe=False)
@@ -247,9 +258,8 @@ def payment_complete(request, order_id):
     PPClient = PayPalClient()
     response = PPClient.capture_payment_order(order_id)
 
-    print(response)
     order = Order.objects.create(
-        user=User.objects.get(id=request.user.id),
+        user=request.user,
         phone=ContactDetail.objects.get(user=request.user.id),
         address=Address.objects.get(user=request.user.id),
         total_paid=response['purchase_units'][0]['payments']['captures'][0]['amount']['value'],
@@ -313,33 +323,18 @@ def register(request):
         return redirect('index')
 
     form = CreateUserForm()
-    form2 = CreateAddressForm()
-    form3 = CreatePhoneNumberForm(request.POST)
 
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
-        form2 = CreateAddressForm(request.POST)
-        form3 = CreatePhoneNumberForm(request.POST)
-
         if form.is_valid():
-            if form2.is_valid():
-                if form3.is_valid():
-                    new_user = form.save()
-                    user = User.objects.get(pk=new_user.id)
-                    address = form2.save(commit=False)
-                    address.user = user
-                    address.save()
-                    phone_number = form3.save(commit=False)
-                    phone_number.user = user
-                    phone_number.save()
-                    cart = Cart(user=user)
-                    cart.save()
-                    messages.success(request, 'Account created successfully!')
-                    return redirect('login')
+            new_user = form.save()
+            user = User.objects.get(pk=new_user.id)
+            cart = Cart(user=user)
+            cart.save()
+            messages.success(request, 'Account created successfully!')
+            return redirect('login')
 
     context = {
         'form': form,
-        'form2': form2,
-        'form3': form3,
     }
     return render(request, 'register.html', context)

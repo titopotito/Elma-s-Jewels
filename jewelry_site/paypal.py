@@ -5,10 +5,13 @@ import json
 
 # LOCAL MODULES
 from config.settings import CLIENT_ID, CLIENT_SECRET
+from .models import Address
 
 
 class PayPalClient:
-    def __init__(self):
+    def __init__(self, user):
+        self.user = user
+        self.addresses = Address.objects.filter(user=self.user)
         self.client_id = CLIENT_ID
         self.client_secret = CLIENT_SECRET
         self.to_base64()
@@ -33,7 +36,17 @@ class PayPalClient:
                         }
                     }
                 },
-                "items": []
+                "items": [],
+                "shipping": {
+                    "address": {
+                        "address_line_1": str(self.addresses[0].address_line_1),
+                        "address_line_2": str(self.addresses[0].address_line_2),
+                        "admin_area_2": str(self.addresses[0].admin_area_2),
+                        "admin_area_1": str(self.addresses[0].admin_area_1),
+                        "postal_code": str(self.addresses[0].postal_code),
+                        "country_code": str(self.addresses[0].country.code)
+                    }
+                }
             }
         ]
 
@@ -49,6 +62,7 @@ class PayPalClient:
         headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + self.base64_message,
+            # 'Paypal-Request-Id': str(self.user.id)
         }
 
         data = json.dumps({"intent": "CAPTURE", "purchase_units": purchase_units})
@@ -56,6 +70,7 @@ class PayPalClient:
         response = requests.post('https://api-m.sandbox.paypal.com/v2/checkout/orders',
                                  headers=headers, data=data)
         response_json = response.json()
+        print('CREATE ORDER: ', response_json)
         return response_json
 
     # SEND REQUEST TO PAYPAL API TO GET ORDER DETAILS
@@ -105,6 +120,7 @@ class PayPalClient:
         response = requests.post(
             'https://api-m.sandbox.paypal.com/v2/checkout/orders/' + str(order_id) + '/capture', headers=headers)
         response_json = response.json()
+        print('CAPTURE ORDER: ', response_json)
         return response_json
 
     def get_total(self, items):

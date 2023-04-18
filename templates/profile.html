@@ -14,11 +14,48 @@
 <main>
     <h2>Pofile</h2>
     <ul>
-        <li>{{ address.unit }}</li>
-        <li>{{ address.street }}</li>
-        <li>{{ address.city }}</li>
+        {% if address %}
+        <li>{{ address.address_line_1 }}</li>
+        <li>{{ address.address_line_2 }}</li>
+        <li>{{ address.admin_area_2 }}</li>
         <li>{{ address.country.name }}, {{ address.country.code }}</li>
+        {% endif %}
     </ul>
+    <form action="{% url 'add_address' %}" method="post">
+        {% csrf_token %}
+        <section>
+            <h3>Account Details</h3>
+            <div>
+                <label for="id_address_line_1">address_line_1</label>
+                {{ address_form.address_line_1 }}
+            </div>
+            <div>
+                <label for="id_address_line_2">address_line_2</label>
+                {{ address_form.address_line_2 }}
+            </div>
+            <div>
+                <label for="id_admin_area_2">admin_area_2</label>
+                {{ address_form.admin_area_2 }}
+            </div>
+            <div>
+                <label for="id_admin_area_1">admin_area_1</label>
+                {{ address_form.admin_area_1 }}
+            </div>
+            <div>
+                <label for="id_postal_code">postal_code</label>
+                {{ address_form.postal_code }}
+            </div>
+            <div>
+                <label for="id_country">Country</label>
+                {{ address_form.country }}
+            </div>
+        </section>
+        <section>
+            <div>
+                <button type="submit">add address</button>
+            </div>
+        </section>
+    </form>
 </main>
 {% include 'partials/footer.html' %}
 <script src="{% static 'js/header.js' %}"></script>

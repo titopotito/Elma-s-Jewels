@@ -49,16 +49,15 @@ class CartItem(models.Model):
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    unit = models.CharField(max_length=100, null=True, blank=True)
-    building = models.CharField(max_length=100, null=True, blank=True)
-    street = models.CharField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=100)
-    region = models.CharField(max_length=100)
+    address_line_1 = models.CharField(max_length=100, null=True, blank=True)
+    address_line_2 = models.CharField(max_length=100, null=True, blank=True)
+    admin_area_1 = models.CharField(max_length=100, null=True, blank=True)
+    admin_area_2 = models.CharField(max_length=100, null=True, blank=True)
     country = CountryField()
-    area_code = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.address_line_1 + self.address_line_2 + self.admin_area_1 + self.admin_area_2 + self.country.name + self.postal_code
 
 
 class ContactDetail(models.Model):

@@ -44,56 +44,7 @@
                 <input type="hidden" id="total-cost" value="{{ total_cost }}" />
             </div>
         </section>
-        <section id="contact-detail-section">
-            <h3>Contact Details:</h3>
-            <div class="form-control">
-                <label for="firstname">First Name: </label>
-                <input type="text" name="firstname" id="firstname" value="{{ user.first_name}}" />
-            </div>
-            <div class="form-control">
-                <label for="lastname">Last Name: </label>
-                <input type="text" name="lastname" id="lastname" value="{{ user.last_name }}" />
-            </div>
-            <div class="form-control">
-                <label for="email">Email: </label>
-                <input type="text" name="email" id="email" value="{{ user.email }}" />
-            </div>
-            <div class="form-control">
-                <label for="contact">Contact No: </label>
-                <input type="text" name="contact" id="contact" value="{{ phone_number }}" />
-            </div>
-        </section>
-        <section id="shipping-detail-section">
-            <h3>Shipping Details:</h3>
-            <div class="form-control">
-                <label for="country">Country: </label>
-                <input type="text" name="country" id="country" value="{{ address.country.name }}" />
-            </div>
-            <div class="form-control">
-                <label for="region">Region / State / Province: </label>
-                <input type="text" name="region" id="region" value="{{ address.region }}" />
-            </div>
-            <div class="form-control">
-                <label for="city">City / Town / Village: </label>
-                <input type="text" name="city" id="city" value="{{ address.city }}" />
-            </div>
-            <div class="form-control">
-                <label for="street">Street / Road / Block: </label>
-                <input type="text" name="street" id="street" value="{{ address.street }}" />
-            </div>
-            <div class="form-control">
-                <label for="building">Building / House: </label>
-                <input type="text" name="building" id="building" value="{{ address.building }}" />
-            </div>
-            <div class="form-control">
-                <label for="unit">Room / Floor: </label>
-                <input type="text" name="unit" id="unit" value="{{ address.unit }}" />
-            </div>
-            <div class="form-control">
-                <label for="area-code">Postal Code / Zip Code: </label>
-                <input type="text" name="area-code" id="area-code" value="{{ address.area_code }}" />
-            </div>
-        </section>
+
         <section id="submit-checkout-section">
             <div id="paypal-button-container"></div>
             <!-- <button type="submit">Checkout</button> -->
@@ -120,7 +71,7 @@
     }
     var csrftoken = getCookie("csrftoken");
 </script>
-<script src="https://www.paypal.com/sdk/js?client-id=AeiH3JAE3-OIIJz0b5KQvVXrzBGhn15fsBt-XtGMTBcVQtnrRa8nwBpwPHv2LUjwvc69w5oW3B8uUIqx"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AeiH3JAE3-OIIJz0b5KQvVXrzBGhn15fsBt-XtGMTBcVQtnrRa8nwBpwPHv2LUjwvc69w5oW3B8uUIqx&disable-funding=paylater"></script>
 <script>
     // Render the PayPal button into #paypal-button-container
     paypal
@@ -144,6 +95,7 @@
 
             // Call your server to finalize the transaction
             onApprove: function (data, actions) {
+                console.log("hellooooooooo0000000000000000000000000000000000000000000");
                 return fetch("/checkout/payment_complete/" + data.orderID, {
                     method: "post",
                     headers: {

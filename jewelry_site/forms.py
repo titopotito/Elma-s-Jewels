@@ -21,7 +21,7 @@ class CreateAddressForm(ModelForm):
 
     class Meta:
         model = Address
-        fields = ['unit', 'building', 'street', 'city', 'region', 'area_code', 'country']
+        fields = ['address_line_1', 'address_line_2', 'admin_area_2', 'admin_area_1', 'postal_code', 'country']
 
 
 class CreatePhoneNumberForm(ModelForm):
