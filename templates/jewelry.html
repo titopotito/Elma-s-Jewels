@@ -1,173 +1,350 @@
-{% extends 'base.html' %} {% load static %}
-<!-- #### -->
-
+{% extends 'base.html' %}
+{% load static %}
 {% block extrahead %}
-<meta name="description" content="Collection of all jewelries in Elma's Jewels" />
-<link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<link rel="stylesheet" href="{% static 'css/jewelry.css' %}" />
-<link rel="stylesheet" href="{% static 'css/cart.css' %}" />
-<title>ELMA'S JEWELS | ALL JEWELRY</title>
+    <meta name="description"
+          content="Collection of all jewelries in Elma's Jewels" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jewelry.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+    <title>ELMA'S JEWELS | ALL JEWELRY</title>
 {% endblock %}
-<!-- #### -->
-
 {% block content %}
-<!-- #### -->
-{% include 'partials/header.html' %}
-<main>
-    <section id="jewelry-section">
-        <figure>
-            <img src="{{ jewelry.image.url }}" alt="" />
-            <figcaption></figcaption>
-        </figure>
-
-        <h2>{{ jewelry.name }}</h2>
-        <div>
-            <strong><data class="price">$ {{ jewelry.price }}</data></strong>
+    {% include 'partials/header.html' %}
+    <main>
+        <section id="jewelry-section">
+            <figure>
+                <img src="{{ jewelry.image.url }}" alt="" />
+            </figure>
+            <h2>{{ jewelry.name }}</h2>
+            <div>
+                <strong><data class="price">$ {{ jewelry.price }}</data></strong>
+            </div>
+            {% if user.is_authenticated %}
+                <form id="add-to-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ jewelry.id }}">
+                    <button type="submit" id="add-to-cart-btn">ADD TO CART</button>
+                </form>
+            {% else %}
+                <form action="/login" method="get">
+                    {% csrf_token %}
+                    <button type="submit">ADD TO CART</button>
+                </form>
+            {% endif %}
+            <p>{{ jewelry.description }}</p>
+            <aside>
+                <h3>CARE TIPS</h3>
+                <p>{{ jewelry.care_tips }}</p>
+            </aside>
+        </section>
+        <section id="jewelry-review-section">
+            <h2>CUSTOMER REVIEWS</h2>
+            <div id="{{ jewelry.rating }}">
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <br />
+                <em>Based on 7 reviews</em>
+            </div>
+            <ul id="rating-statistics">
+                <li>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span>0%</span>
+                    <span>(0)</span>
+                </li>
+                <li>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star"></span>
+                    <span>0%</span>
+                    <span>(0)</span>
+                </li>
+                <li>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span>100%</span>
+                    <span>(7)</span>
+                </li>
+                <li>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span>0%</span>
+                    <span>(0)</span>
+                </li>
+                <li>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                    <span>0%</span>
+                    <span>(0)</span>
+                </li>
+            </ul>
+            <ul id="reviews">
+                <li>
+                    <span>James</span>
+                    <br />
+                    <time datetime="2022-7-7">07/07/2022</time>
+                    <div class="rating">
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <br />
+                    </div>
+                    <br />
+                    <p>
+                        Just received both items, I love love love them! Thank you so much for your service and the gift.
+                        Will highly recommend your brand to all of my friends.
+                    </p>
+                </li>
+                <li>
+                    <span>James</span>
+                    <br />
+                    <time datetime="2022-7-7">07/07/2022</time>
+                    <div class="rating">
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <br />
+                    </div>
+                    <br />
+                    <p>
+                        Just received both items, I love love love them! Thank you so much for your service and the gift.
+                        Will highly recommend your brand to all of my friends.
+                    </p>
+                </li>
+                <li>
+                    <span>James</span>
+                    <br />
+                    <time datetime="2022-7-7">07/07/2022</time>
+                    <div class="rating">
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <br />
+                    </div>
+                    <br />
+                    <p>
+                        Just received both items, I love love love them! Thank you so much for your service and the gift.
+                        Will highly recommend your brand to all of my friends.
+                    </p>
+                </li>
+                <li>
+                    <span>James</span>
+                    <br />
+                    <time datetime="2022-7-7">07/07/2022</time>
+                    <div class="rating">
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <br />
+                    </div>
+                    <br />
+                    <p>
+                        Just received both items, I love love love them! Thank you so much for your service and the gift.
+                        Will highly recommend your brand to all of my friends.
+                    </p>
+                </li>
+            </ul>
+        </section>
+    </main>
+    <section id="cart-pop-up">
+        <button id="close-cart-pop-up-btn">
+            <i class="fa fa-close"></i>
+        </button>
+        <h2>
+            CART
+        </h2>
+        <hr>
+        <div id="cart-item-list">
+            <div>
+                <figure class="cart-item-image">
+                    <img src="{% static 'images/others/kateryna-hliznitsova-orila32ay5U-unsplash.jpg' %}"
+                         alt="">
+                </figure>
+                <div class="cart-item-details">
+                    <h3>
+                        Gold Ring
+                    </h3>
+                    <p>
+                        $ <span>4000</span>
+                    </p>
+                    <div class="cart-quantity">
+                        <form action="/cart/update_cart_item/{{ cart_item.id }}"
+                              class="update-order-quantity-form"
+                              method="post">
+                            {% csrf_token %}
+                            <button class="fas fa-angle-up">
+                            </button>
+                            <input type="number"
+                                   min="0"
+                                   value="{{ cart_item.order_quantity }}"
+                                   name="order-quantity" />
+                            <button class="fas fa-angle-down">
+                            </button>
+                        </form>
+                        <form action="/cart/delete_cart_item/{{ cart_item.id }}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="fas fa-trash-alt">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <figure class="cart-item-image">
+                    <img src="{% static 'images/others/kateryna-hliznitsova-orila32ay5U-unsplash.jpg' %}"
+                         alt="">
+                </figure>
+                <div class="cart-item-details">
+                    <h3>
+                        Sabrianna Silver Ring
+                    </h3>
+                    <p>
+                        $ <span>4000</span>
+                    </p>
+                    <div class="cart-quantity">
+                        <form action="/cart/update_cart_item/{{ cart_item.id }}"
+                              class="update-order-quantity-form"
+                              method="post">
+                            {% csrf_token %}
+                            <button class="fas fa-angle-up">
+                            </button>
+                            <input type="number"
+                                   min="0"
+                                   value="{{ cart_item.order_quantity }}"
+                                   name="order-quantity" />
+                            <button class="fas fa-angle-down">
+                            </button>
+                        </form>
+                        <form action="/cart/delete_cart_item/{{ cart_item.id }}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="fas fa-trash-alt">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% if user.is_authenticated %}
-        <form action="/cart/add_cart_item/{{ jewelry.id }}" method="post">
-            {% csrf_token %}
-            <button type="submit">ADD TO CART</button>
+        <hr>
+        <p>
+            <a href="{% url 'cart' %}">View All</a>
+        </p>
+        <form action="{% url 'checkout' %}" method="get" id="cart-checkout-section">
+            <div>
+                <p>
+                    <span>SUBTOTAL:</span><strong id="cart-subtotal">$ 4000</strong>
+                </p>
+                <p>
+                    <em>Shipping & taxes calculated at checkout.</em>
+                </p>
+                <button type="submit">
+                    <i class="fas fa-shopping-bag"> </i> CHECKOUT
+                </button>
+            </div>
         </form>
-        {% else %}
-        <form action="/login" method="get">
-            {% csrf_token %}
-            <button type="submit">ADD TO CART</button>
-        </form>
-        {% endif %}
-        <p>{{ jewelry.description }}</p>
-        <aside>
-            <h3>CARE TIPS</h3>
-            <p>{{ jewelry.care_tips }}</p>
-        </aside>
     </section>
-    <section id="jewelry-review-section">
-        <h2>CUSTOMER REVIEWS</h2>
-        <div id="{{ jewelry.rating }}">
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star"></span><br />
-            <em>Based on 7 reviews</em>
-        </div>
-        <ul id="rating-statistics">
-            <li>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span>0%</span>
-                <span>(0)</span>
-            </li>
-            <li>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>
-                <span>0%</span>
-                <span>(0)</span>
-            </li>
-            <li>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span>100%</span>
-                <span>(7)</span>
-            </li>
-            <li>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span>0%</span>
-                <span>(0)</span>
-            </li>
-            <li>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span>0%</span>
-                <span>(0)</span>
-            </li>
-        </ul>
+    {% include 'partials/footer.html' %}
+    <script src="{% static 'js/header.js' %}"></script>
+    <script>
+        const closeCartPopUpBtn = document.getElementById("close-cart-pop-up-btn")
+        const addToCartForm = document.getElementById("add-to-cart-form");
+        const csrfTokenContainer = addToCartForm.children[0];
 
-        <ul id="reviews">
-            <li>
-                <span>James</span> <br />
-                <time datetime="2022-7-7">07/07/2022</time>
-                <div class="rating">
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span><br />
-                </div>
-                <br />
-                <p>
-                    Just received both items, I love love love them! Thank you so much for your service and the gift.
-                    Will highly recommend your brand to all of my friends.
-                </p>
-            </li>
-            <li>
-                <span>James</span> <br />
-                <time datetime="2022-7-7">07/07/2022</time>
-                <div class="rating">
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span><br />
-                </div>
-                <br />
-                <p>
-                    Just received both items, I love love love them! Thank you so much for your service and the gift.
-                    Will highly recommend your brand to all of my friends.
-                </p>
-            </li>
-            <li>
-                <span>James</span> <br />
-                <time datetime="2022-7-7">07/07/2022</time>
-                <div class="rating">
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span><br />
-                </div>
-                <br />
-                <p>
-                    Just received both items, I love love love them! Thank you so much for your service and the gift.
-                    Will highly recommend your brand to all of my friends.
-                </p>
-            </li>
-            <li>
-                <span>James</span> <br />
-                <time datetime="2022-7-7">07/07/2022</time>
-                <div class="rating">
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span><br />
-                </div>
-                <br />
-                <p>
-                    Just received both items, I love love love them! Thank you so much for your service and the gift.
-                    Will highly recommend your brand to all of my friends.
-                </p>
-            </li>
-        </ul>
-    </section>
-</main>
-{% include 'partials/footer.html' %}
-<script src="{% static 'js/header.js' %}"></script>
-<!-- #### -->
+        addToCartForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            csrftoken = csrfTokenContainer.value;
+            url = `{% url 'add_cart_item' jewelry.id %}`
+            fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken,
+                },
+            }).then(function (res) {
+                return res.json()
+            }).then(function (res) {
+  
+                const cartPopUp = document.getElementById("cart-pop-up")
+                const cartItemList = document.getElementById("cart-item-list")
+                const cartSubtotal = document.getElementById("cart-subtotal")
+                const countPill = document.getElementsByClassName('fas fa-shopping-cart')[0]
+                
+                cartPopUp.style["display"] = "block"
+                cartItemList.innerHTML = ''
+                countPill.innerHTML = `
+                    <span id="count-pill"><span>${ res.items.length }</span></span>
+                `
+                for (let item of res.items) {
+                    let div = document.createElement('div')
+                    div.innerHTML = `
+                        <figure class="cart-item-image">
+                            <img src="${ item.image_url }"
+                                alt="">
+                        </figure>
+                        <div class="cart-item-details">
+                            <h3><a href="/shop/jewelry/${ item.jewelry_id }">
+                                ${ item.name }
+                                </a>
+                            </h3>
+                            <p>
+                                $ <span>${ item.price }</span>
+                            </p>
+                            <div class="cart-quantity">
+                                <form action="/cart/update_cart_item/${ item.id }"
+                                    class="update-order-quantity-form"
+                                    method="post">
+                                    {% csrf_token %}
+                                    <button class="fas fa-angle-up">
+                                    </button>
+                                    <input type="number"
+                                        min="0"
+                                        value="${ item.order_quantity }"
+                                        name="order-quantity" />
+                                    <button class="fas fa-angle-down">
+                                    </button>
+                                </form>
+                                <form action="/cart/delete_cart_item/${ item.id }" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="fas fa-trash-alt">
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    `
+                    cartItemList.appendChild(div)
+                }
+                cartSubtotal.innerHTML = `$ ${res.subtotal}`
+            });
+        });
+
+        closeCartPopUpBtn.addEventListener('click', e => {
+            const cartPopUp = document.getElementById("cart-pop-up")
+                cartPopUp.style["display"] = "none"
+        })
+
+    </script>
 {% endblock %}

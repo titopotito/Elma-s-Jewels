@@ -31,13 +31,23 @@ def profile(request):
     if request.method == 'GET':
         cart = Cart.objects.get(user=request.user.id)
         cart_item_count = CartItem.objects.filter(cart=cart.id).count()
-        form = CreateAddressForm()
-        address = Address.objects.get(user=request.user.id)
+
+        try:
+            addresses = Address.objects.filter(user=request.user.id)
+        except:
+            addresses = None
+        try:
+            orders = []
+            orderquery = Order.objects.filter(user=request.user.id)
+            for order in orderquery:
+                orders.append({'order_key': order.order_key, 'list': OrderItem.objects.filter(order=order)})
+        except:
+            orders = None
         context = {
             'cart': cart,
             'cart_item_count': cart_item_count,
-            'address': address,
-            'address_form': form
+            'addresses': addresses,
+            'orders': orders
         }
 
         return render(request, 'profile.html', context)
@@ -45,8 +55,12 @@ def profile(request):
 
 @login_required(login_url='login')
 def add_address(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
+        form = CreateAddressForm()
+        context = {'address_form': form}
+        return render(request, 'add_address.html', context)
 
+    if request.method == 'POST':
         form = CreateAddressForm(request.POST)
         if form.is_valid():
             user = User.objects.get(pk=request.user.id)
@@ -73,17 +87,11 @@ def cart_page(request):
         cart_items = CartItem.objects.filter(cart=cart.id).order_by('id')
         cart_item_count = cart_items.count()
 
-        total_cost = 0
-        if cart_items.count() > 0:
-            for cart_item in cart_items:
-                if cart_item.is_selected == True:
-                    total_cost = total_cost + (cart_item.sub_total*cart_item.order_quantity)
-
         context = {
             'cart_items': cart_items,
             'cart_item_count': cart_item_count,
             'cart': cart,
-            'total_cost': total_cost
+            'total_cost': cart.get_total_selected()
         }
         return render(request, 'cart.html', context)
 
@@ -91,11 +99,29 @@ def cart_page(request):
 @login_required(login_url='login')
 def add_cart_item(request, jewelry_id):
     if request.method == 'POST':
-        jewelry = Jewelry.objects.get(pk=jewelry_id)
         cart = Cart.objects.get(user=request.user.id)
-        cart_item = CartItem(cart=cart, jewelry=jewelry, order_quantity=1, sub_total=jewelry.price)
+        cart_items = CartItem.objects.filter(cart=cart)
+        for item in cart_items:
+            if item.jewelry.id == jewelry_id:
+                item.order_quantity = item.order_quantity + 1
+                item.save()
+                items = []
+                for item in cart_items:
+                    items.append({"id": item.id, "jewelry_id": item.jewelry.id, "name": item.jewelry.name,
+                                  "price": item.jewelry.price, "image_url": item.jewelry.image.url, "order_quantity": item.order_quantity})
+                data = {"subtotal": cart.get_total_selected(), "items": items}
+                return JsonResponse(data, safe=False)
+        jewelry = Jewelry.objects.get(pk=jewelry_id)
+
+        cart_item = CartItem(cart=cart, jewelry=jewelry, order_quantity=1)
         cart_item.save()
-        return redirect('cart')
+        cart_items = CartItem.objects.filter(cart=cart)
+        items = []
+        for item in cart_items:
+            items.append({"id": item.id, "jewelry_id": item.jewelry.id, "name": item.jewelry.name,
+                         "price": item.jewelry.price, "image_url": item.jewelry.image.url, "order_quantity": item.order_quantity})
+        data = {"subtotal": cart.get_total_selected(), "items": items}
+        return JsonResponse(data, safe=False)
 
 
 @login_required(login_url='login')
@@ -226,15 +252,10 @@ def checkout(request):
             messages.error(request, 'There are no items to checkout.')
             return redirect('cart')
 
-        total_cost = 0
-        for checkout_item in checkout_items:
-            if checkout_item.is_selected:
-                total_cost = total_cost + (checkout_item.sub_total*checkout_item.order_quantity)
-
         context = {
             'cart_item_count': CartItem.objects.filter(cart=cart).count(),
             'checkout_items': checkout_items,
-            'total_cost': total_cost,
+            'total_cost': cart.get_total_selected(),
         }
 
         return render(request, 'checkout.html', context)
@@ -255,7 +276,7 @@ def create_order(request):
 @login_required(login_url='login')
 def payment_complete(request, order_id):
 
-    PPClient = PayPalClient()
+    PPClient = PayPalClient(request.user)
     response = PPClient.capture_payment_order(order_id)
 
     order = Order.objects.create(

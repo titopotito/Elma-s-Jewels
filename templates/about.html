@@ -1,12 +1,12 @@
-{% block extrahead %} {% load static %}
-<meta name="description" content="Collection of all jewelries in Elma's Jewels" />
-<link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<title>ELMA'S JEWELS | ABOUT PAGE</title>
+{% block extrahead %}
+    {% load static %}
+    <meta name="description"
+          content="Collection of all jewelries in Elma's Jewels" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+    <title>ELMA'S JEWELS | ABOUT PAGE</title>
 {% endblock %}
-<!-- #### -->
-
 {% block content %}
-<!-- #### -->
-{% include 'partials/header.html' %}
-<h1>ABOUT</h1>
-{% include 'partials/footer.html' %} {% endblock %}
+    {% include 'partials/header.html' %}
+    <h1>ABOUT</h1>
+    {% include 'partials/footer.html' %}
+{% endblock %}

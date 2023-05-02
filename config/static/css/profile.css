@@ -1,0 +1,95 @@
+main {
+    background-color: #fff3e4;
+    display: flex;
+    flex-direction: column;
+}
+
+main * {
+    color: black;
+}
+
+#profile-picture {
+    width: 20ch;
+    height: 20ch;
+    background-color: black;
+}
+
+figure {
+    display: flex;
+    justify-content: center;
+}
+
+section > div {
+    margin: 1.5rem 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "sub-header div-btn"
+        "details details";
+}
+
+.sub-header {
+    grid-area: sub-header;
+}
+
+.div-btn {
+    grid-area: div-btn;
+}
+
+.details {
+    grid-area: details;
+}
+
+.btn {
+    color: blue !important;
+    font-size: x-small;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+hr {
+    margin: 1rem 0;
+}
+
+td,
+th {
+    border: none;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.6);
+    padding: 1rem;
+}
+
+td {
+    text-align: center;
+}
+
+table {
+    font-size: small;
+    border-collapse: collapse;
+}
+
+@media screen and (min-width: 640px) {
+    main {
+        padding: 0 5%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    main {
+        padding: 0 10%;
+    }
+
+    .address-li {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    main {
+        padding: 0 15%;
+    }
+}

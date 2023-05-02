@@ -1,69 +1,69 @@
-{% extends 'base.html' %} {% load static %} {% load humanize %}
-<!-- ### -->
-
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
 {% block extrahead %}
-<meta name="description" content="Elma's Jewels Home Page" />
-<link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<title>ELMA'S JEWELS | HOME</title>
+    <meta name="description" content="Elma's Jewels Home Page" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+    <title>ELMA'S JEWELS | HOME</title>
 {% endblock %}
-<!-- ##### -->
-
 {% block content %}
-<!-- #### -->
-{% include 'partials/header.html' %}
-<main>
-    <section id="categories-section">
-        <h2>CATEGORIES</h2>
-        <div>
-            <a href="/shop?category=rings" method="get">
-                <figure>
-                    <img src="{% static 'images/others/kateryna-hliznitsova-orila32ay5U-unsplash.jpg' %}" alt="" />
-                    <figcaption>RINGS</figcaption>
-                </figure></a
-            >
-            <a href="/shop?category=necklaces" method="get">
-                <figure>
-                    <img src="{% static 'images/others/andie-gomez-acebo-sEq4onJnWrI-unsplash.jpg' %}" alt="" />
-                    <figcaption>NECKLACES</figcaption>
-                </figure></a
-            >
-            <a href="/shop?category=earrings" method="get">
-                <figure>
-                    <img src="{% static 'images/others/patricia-zavala-3tP-noTcaE8-unsplash.jpg' %}" alt="" />
-                    <figcaption>EARRINGS</figcaption>
-                </figure></a
-            >
-            <a href="/shop?category=bracelets" method="get">
-                <figure>
-                    <img src="{% static 'images/others/sama-hosseini-h_ssRPj8UZo-unsplash.jpg' %}" alt="" />
-                    <figcaption>BRACELETS</figcaption>
-                </figure>
-            </a>
-        </div>
-    </section>
-    <section id="best-sellers-section">
-        <h2>BEST SELLERS</h2>
-        <ul>
-            {% for best_seller in best_sellers %}
-            <li>
-                <article>
-                    <a href="/shop/jewelry/{{ best_seller.id }}">
-                        <img src="{{ best_seller.image.url }}" alt="" />
-                        <h3>{{ best_seller.name }}</h3>
-                        <p>
-                            <data value="{{ best_seller.price }}">$ {{ best_seller.price | intcomma}}</data>
-                        </p>
-                    </a>
-                </article>
-            </li>
-            {% endfor %}
-        </ul>
-        <div>
-            <a id="view-all-btn" href="shop">VIEW ALL</a>
-        </div>
-    </section>
-</main>
-{% include 'partials/footer.html' %}
-<script src="{% static 'js/header.js' %}"></script>
-<!-- #### -->
+    {% include 'partials/header.html' %}
+    <main>
+        <section id="categories-section">
+            <h2>CATEGORIES</h2>
+            <div>
+                <a href="/shop?category=rings" method="get">
+                    <figure>
+                        <img src="{% static 'images/others/kateryna-hliznitsova-orila32ay5U-unsplash.jpg' %}"
+                             alt="" />
+                        <figcaption>RINGS</figcaption>
+                    </figure>
+                </a>
+                <a href="/shop?category=necklaces" method="get">
+                    <figure>
+                        <img src="{% static 'images/others/andie-gomez-acebo-sEq4onJnWrI-unsplash.jpg' %}"
+                             alt="" />
+                        <figcaption>NECKLACES</figcaption>
+                    </figure>
+                </a>
+                <a href="/shop?category=earrings" method="get">
+                    <figure>
+                        <img src="{% static 'images/others/patricia-zavala-3tP-noTcaE8-unsplash.jpg' %}"
+                             alt="" />
+                        <figcaption>EARRINGS</figcaption>
+                    </figure>
+                </a>
+                <a href="/shop?category=bracelets" method="get">
+                    <figure>
+                        <img src="{% static 'images/others/sama-hosseini-h_ssRPj8UZo-unsplash.jpg' %}"
+                             alt="" />
+                        <figcaption>BRACELETS</figcaption>
+                    </figure>
+                </a>
+            </div>
+        </section>
+        <section id="best-sellers-section">
+            <h2>BEST SELLERS</h2>
+            <ul>
+                {% for best_seller in best_sellers %}
+                    <li>
+                        <article>
+                            <a href="/shop/jewelry/{{ best_seller.id }}">
+                                <img src="{{ best_seller.image.url }}" alt="" />
+                                <h3>{{ best_seller.name }}</h3>
+                                <p>
+                                    <data value="{{ best_seller.price }}">$ {{ best_seller.price | intcomma }}</data>
+                                </p>
+                            </a>
+                        </article>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div>
+                <a id="view-all-btn" href="shop">VIEW ALL</a>
+            </div>
+        </section>
+    </main>
+    {% include 'partials/footer.html' %}
+    <script src="{% static 'js/header.js' %}"></script>
 {% endblock %}

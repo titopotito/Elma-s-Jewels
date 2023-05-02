@@ -1,60 +1,59 @@
-{% extends 'base.html' %} {% load static %} {% load humanize %}
-<!-- ### -->
-
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
 {% block extrahead %}
-<meta name="description" content="Elma's Jewels Checkout Page" />
-<link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
-<title>ELMA'S JEWEL | CHECKOUT</title>
+    <meta name="description" content="Elma's Jewels Checkout Page" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
+    <title>ELMA'S JEWEL | CHECKOUT</title>
 {% endblock %}
-
-<!-- ##### -->
-
 {% block content %}
-<!-- #### -->
-{% include 'partials/header2.html' %}
-<main>
-    <h2>CHECKOUT</h2>
-    <form action="">
-        {% csrf_token %}
-        <section id="order-summary-section">
-            <h3>Order Summary:</h3>
-            <ul>
-                <li>
-                    <div class="checkout-item"><strong>Item</strong></div>
-                    <div class="checkout-quantity"><strong>Qty</strong></div>
-                    <div class="checkout-price"><strong>Price</strong></div>
-                </li>
-                {% for checkout_item in checkout_items %}
-                <li class="checkout-items">
-                    <figure class="checkout-item">
-                        <img src="{{ checkout_item.jewelry.image.url }}" alt="" />
-                        <figcaption>{{ checkout_item.jewelry.name }}</figcaption>
-                    </figure>
-                    <div class="checkout-quantity">
-                        <span>{{ checkout_item.order_quantity }} </span>
-                    </div>
-                    <div class="checkout-price">$ {{ checkout_item.jewelry.price | intcomma }}</div>
-                </li>
-                {% endfor %}
-            </ul>
-            <hr />
-            <div id="total-cost-container">
-                <strong>Total:</strong><strong>$ {{ total_cost | intcomma }}</strong>
-                <input type="hidden" id="total-cost" value="{{ total_cost }}" />
-            </div>
-        </section>
-
-        <section id="submit-checkout-section">
-            <div id="paypal-button-container"></div>
-            <!-- <button type="submit">Checkout</button> -->
-        </section>
-    </form>
-</main>
-
-{% include 'partials/footer.html' %}
-
-<script>
+    {% include 'partials/header2.html' %}
+    <main>
+        <h2>CHECKOUT</h2>
+        <form action="">
+            {% csrf_token %}
+            <section id="order-summary-section">
+                <h3>Order Summary:</h3>
+                <ul>
+                    <li>
+                        <div class="checkout-item">
+                            <strong>Item</strong>
+                        </div>
+                        <div class="checkout-quantity">
+                            <strong>Qty</strong>
+                        </div>
+                        <div class="checkout-price">
+                            <strong>Price</strong>
+                        </div>
+                    </li>
+                    {% for checkout_item in checkout_items %}
+                        <li class="checkout-items">
+                            <figure class="checkout-item">
+                                <img src="{{ checkout_item.jewelry.image.url }}" alt="" />
+                                <figcaption>{{ checkout_item.jewelry.name }}</figcaption>
+                            </figure>
+                            <div class="checkout-quantity">
+                                <span>{{ checkout_item.order_quantity }}</span>
+                            </div>
+                            <div class="checkout-price">$ {{ checkout_item.jewelry.price | intcomma }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <hr />
+                <div id="total-cost-container">
+                    <strong>Total:</strong><strong>$ {{ total_cost | intcomma }}</strong>
+                    <input type="hidden" id="total-cost" value="{{ total_cost }}" />
+                </div>
+            </section>
+            <section id="submit-checkout-section">
+                <div id="paypal-button-container"></div>
+                <!-- <button type="submit">Checkout</button> -->
+            </section>
+        </form>
+    </main>
+    {% include 'partials/footer.html' %}
+    <script>
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== "") {
@@ -70,9 +69,9 @@
         return cookieValue;
     }
     var csrftoken = getCookie("csrftoken");
-</script>
-<script src="https://www.paypal.com/sdk/js?client-id=AeiH3JAE3-OIIJz0b5KQvVXrzBGhn15fsBt-XtGMTBcVQtnrRa8nwBpwPHv2LUjwvc69w5oW3B8uUIqx&disable-funding=paylater"></script>
-<script>
+    </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AeiH3JAE3-OIIJz0b5KQvVXrzBGhn15fsBt-XtGMTBcVQtnrRa8nwBpwPHv2LUjwvc69w5oW3B8uUIqx&disable-funding=paylater"></script>
+    <script>
     // Render the PayPal button into #paypal-button-container
     paypal
         .Buttons({
@@ -129,7 +128,7 @@
                         }
 
                         // Successful capture! For demo purposes:
-                        location.href = "{% url 'payment_successful' %}";
+                        location.href = "{% url 'profile' %}";
 
                         // Replace the above to show a success message within this page, e.g.
                         // const element = document.getElementById('paypal-button-container');
@@ -140,7 +139,6 @@
             },
         })
         .render("#paypal-button-container");
-</script>
-<script src="{% static 'js/header.js' %}"></script>
-<!-- #### -->
+    </script>
+    <script src="{% static 'js/header.js' %}"></script>
 {% endblock %}

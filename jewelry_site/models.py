@@ -32,6 +32,20 @@ class Jewelry(models.Model):
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def get_total(self):
+        cart_items = CartItem.objects.filter(user=self.user)
+        total_cost = 0
+        for item in cart_items:
+            total_cost = total_cost + item.get_subtotal()
+        return total_cost
+
+    def get_total_selected(self):
+        cart_items = CartItem.objects.filter(cart=self, is_selected=True)
+        total_cost = 0
+        for item in cart_items:
+            total_cost = total_cost + item.get_subtotal()
+        return total_cost
+
     def __str__(self):
         return self.user.username
 
@@ -40,8 +54,10 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     jewelry = models.ForeignKey(Jewelry, on_delete=models.CASCADE)
     order_quantity = models.PositiveIntegerField()
-    sub_total = models.DecimalField(max_digits=9, decimal_places=2)
     is_selected = models.BooleanField(default=True)
+
+    def get_subtotal(self):
+        return self.jewelry.price * self.order_quantity
 
     def __str__(self):
         return self.jewelry.name
@@ -57,7 +73,10 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.address_line_1 + self.address_line_2 + self.admin_area_1 + self.admin_area_2 + self.country.name + self.postal_code
+        if self.address_line_2:
+            return self.address_line_1 + self.address_line_2 + self.admin_area_1 + self.admin_area_2 + self.country.name + self.postal_code
+        else:
+            return self.address_line_1 + self.admin_area_1 + self.admin_area_2 + self.country.name + self.postal_code
 
 
 class ContactDetail(models.Model):

@@ -1,63 +1,80 @@
-{% extends 'base.html' %} {% load static %}
-<!-- ### -->
-
+{% extends 'base.html' %}
+{% load static %}
 {% block extrahead %}
-<meta name="description" content="Elma's Jewels Home Page" />
-<link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<title>ELMA'S JEWELS | HOME</title>
+    <meta name="description" content="Elma's Jewels Home Page" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+    <title>ELMA'S JEWELS | HOME</title>
 {% endblock %}
-<!-- ##### -->
-
 {% block content %}
-<!-- #### -->
-{% include 'partials/header2.html' %}
-<main>
-    <h2>Pofile</h2>
-    <ul>
-        {% if address %}
-        <li>{{ address.address_line_1 }}</li>
-        <li>{{ address.address_line_2 }}</li>
-        <li>{{ address.admin_area_2 }}</li>
-        <li>{{ address.country.name }}, {{ address.country.code }}</li>
-        {% endif %}
-    </ul>
-    <form action="{% url 'add_address' %}" method="post">
-        {% csrf_token %}
+    {% include 'partials/header2.html' %}
+    <main>
+        <h2>PROFILE</h2>
         <section>
-            <h3>Account Details</h3>
+            <figure>
+                <div id="profile-picture"></div>
+            </figure>
             <div>
-                <label for="id_address_line_1">address_line_1</label>
-                {{ address_form.address_line_1 }}
+                <h3 class="sub-header">Account Details</h3>
+                <a href="" class="btn div-btn">Edit</a>
+                <ul class="details">
+                    <li>Name: {{ request.user.first_name }} {{ request.user.last_name }}</li>
+                    <li>Username: {{ request.user.username }}</li>
+                    <li>Email: {{ request.user.email }}</li>
+                    <li>Password: ******</li>
+                </ul>
             </div>
             <div>
-                <label for="id_address_line_2">address_line_2</label>
-                {{ address_form.address_line_2 }}
+                <h3 class="sub-header">Addresses</h3>
+                <a href="{% url 'add_address' %}" class="btn div-btn">Add</a>
+                <ul class="details">
+                    <hr />
+                    {% if addresses %}
+                        {% for address in addresses %}
+                            <li class="address-li">
+                                <p>
+                                    {{ address.address_line_1 }},
+                                    {% if address.address_line_2 %}{{ address.address_line_2 }},{% endif %}
+                                    {{ address.admin_area_2 }}, {{ address.admin_area_1 }}, {{ address.postal_code }},
+                                    {{ address.country.name }}
+                                </p>
+                                <div class="btn-container">
+                                    <a href="" class="btn">Edit</a><a href="" class="btn">Delete</a>
+                                </div>
+                            </li>
+                            <hr />
+                        {% endfor %}
+                    {% else %}
+                        <li>No Address To Display</li>
+                    {% endif %}
+                </ul>
             </div>
             <div>
-                <label for="id_admin_area_2">admin_area_2</label>
-                {{ address_form.admin_area_2 }}
-            </div>
-            <div>
-                <label for="id_admin_area_1">admin_area_1</label>
-                {{ address_form.admin_area_1 }}
-            </div>
-            <div>
-                <label for="id_postal_code">postal_code</label>
-                {{ address_form.postal_code }}
-            </div>
-            <div>
-                <label for="id_country">Country</label>
-                {{ address_form.country }}
+                <h3 class="sub-header">Orders</h3>
+                <a href="" class="btn">View All</a>
+                {% if orders %}
+                    <table class="details">
+                        <tr>
+                            <th>Order #</th>
+                            <th>Items</th>
+                            <th>Status</th>
+                        </tr>
+                        {% for order in orders %}
+                            <tr>
+                                <td>{{ order.order_key }}</td>
+                                <td>
+                                    {% for item in order.list %}<span>{{ item.jewelry.name }}</span>{% endfor %}
+                                </td>
+                                <td>Shipping</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p>No orders to display</p>
+                {% endif %}
             </div>
         </section>
-        <section>
-            <div>
-                <button type="submit">add address</button>
-            </div>
-        </section>
-    </form>
-</main>
-{% include 'partials/footer.html' %}
-<script src="{% static 'js/header.js' %}"></script>
-<!-- #### -->
+    </main>
+    {% include 'partials/footer.html' %}
+    <script src="{% static 'js/header.js' %}"></script>
 {% endblock %}

@@ -1,91 +1,104 @@
-{% extends 'base.html' %} {% load static %} {% load humanize %}
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
 <!-- ### -->
-
 {% block extrahead %}
-<meta name="description" content="Elma's Jewels Cart" />
-<link rel="stylesheet" href="{% static 'css/all.css' %}" />
-<link rel="stylesheet" href="{% static 'css/cart.css' %}" />
-<title>ELMA'S JEWEL | CART</title>
+    <meta name="description" content="Elma's Jewels Cart" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+    <title>ELMA'S JEWEL | CART</title>
 {% endblock %}
-
-<!-- ##### -->
-
 {% block content %}
-<!-- #### -->
-{% include 'partials/header2.html' %}
-<main id="cart-section">
-    <h2>CART</h2>
-    {% include 'partials/alerts.html' %}
-    <br />
-    <ul id="cart-list">
-        <li id="cart-header">
-            <!-- <span class="cart-checkbox"><input class="checkbox" name="checkbox" type="checkbox" checked="true" /></span> -->
-            <span class="cart-item">ITEM</span>
-            <span class="cart-price">PRICE</span>
-            <span class="cart-quantity">QUANTITY</span>
-            <span class="cart-total">TOTAL</span>
-        </li>
-        <hr />
-        {% if cart_items|length > 0 %} {% for cart_item in cart_items %}
-
-        <li class="cart-items">
-            <form class="cart-checkbox" method="POST" action="/cart/toggle_checkbox/{{ cart_item.id }}">
-                {% csrf_token %} {% if cart_item.is_selected == True %}
-                <input class="checkbox" name="checkbox" type="checkbox" checked="true" value="{{ cart_item.id }}" />
-                {% else %}
-                <input class="checkbox" name="checkbox" type="checkbox" value="{{ cart_item.id }}" />
-                {% endif %}
-            </form>
-            <figure class="cart-item">
-                <img src="{{ cart_item.jewelry.image.url }}" alt="" />
-                <figcaption>{{ cart_item.jewelry.name }}</figcaption>
-            </figure>
-            <div class="cart-price">
-                <span>Price: </span>
-                $ {{ cart_item.jewelry.price|intcomma }}
+    {% include 'partials/header2.html' %}
+    <main id="cart-section">
+        <h2>CART</h2>
+        {% include 'partials/alerts.html' %}
+        <br />
+        <ul id="cart-list">
+            <li id="cart-header">
+                <!-- <span class="cart-checkbox"><input class="checkbox" name="checkbox" type="checkbox" checked="true" /></span> -->
+                <span class="cart-item">ITEM</span>
+                <span class="cart-price">PRICE</span>
+                <span class="cart-quantity">QUANTITY</span>
+                <span class="cart-total">TOTAL</span>
+            </li>
+            <hr />
+            {% if cart_items|length > 0 %}
+                {% for cart_item in cart_items %}
+                    <li class="cart-items">
+                        <form class="cart-checkbox"
+                              method="post"
+                              action="/cart/toggle_checkbox/{{ cart_item.id }}">
+                            {% csrf_token %}
+                            {% if cart_item.is_selected == True %}
+                                <input class="checkbox"
+                                       name="checkbox"
+                                       type="checkbox"
+                                       checked="true"
+                                       value="{{ cart_item.id }}" />
+                            {% else %}
+                                <input class="checkbox"
+                                       name="checkbox"
+                                       type="checkbox"
+                                       value="{{ cart_item.id }}" />
+                            {% endif %}
+                        </form>
+                        <figure class="cart-item">
+                            <img src="{{ cart_item.jewelry.image.url }}" alt="" />
+                            <figcaption>{{ cart_item.jewelry.name }}</figcaption>
+                        </figure>
+                        <div class="cart-price">
+                            <span>Price:</span>
+                            $ {{ cart_item.jewelry.price|intcomma }}
+                        </div>
+                        <div class="cart-quantity">
+                            <span>Quantity:</span>
+                            <form action="/cart/update_cart_item/{{ cart_item.id }}"
+                                  class="update-order-quantity-form"
+                                  method="post">
+                                {% csrf_token %}
+                                <button class="fas fa-angle-up"></button>
+                                <input type="number"
+                                       min="0"
+                                       value="{{ cart_item.order_quantity }}"
+                                       name="order-quantity" />
+                                <button class="fas fa-angle-down"></button>
+                            </form>
+                            <form action="/cart/delete_cart_item/{{ cart_item.id }}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="fas fa-trash-alt"></button>
+                            </form>
+                        </div>
+                        <div class="cart-total">
+                            <span>Total:</span>
+                            $ {% widthratio cart_item.jewelry.price 1 cart_item.order_quantity as total %} {{ total | intcomma }}
+                        </div>
+                    </li>
+                    <hr />
+                {% endfor %}
+            {% else %}
+                <p>NO ITEMS IN CART</p>
+            {% endif %}
+        </ul>
+        <form id="cart-checkout-section" action="{% url 'checkout' %}" method="get">
+            <div>
+                <label>Add Order Note</label>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
             </div>
-            <div class="cart-quantity">
-                <span>Quantity: </span>
-                <form
-                    action="/cart/update_cart_item/{{ cart_item.id }}"
-                    class="update-order-quantity-form"
-                    method="post"
-                >
-                    {% csrf_token %}
-                    <button class="fas fa-angle-up"></button>
-                    <input type="number" min="0" value="{{ cart_item.order_quantity }}" name="order-quantity" />
-                    <button class="fas fa-angle-down"></button>
-                </form>
-                <form action="/cart/delete_cart_item/{{ cart_item.id }}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="fas fa-trash-alt"></button>
-                </form>
+            <div>
+                <p>
+                    <span>SUBTOTAL:</span><strong>$ {{ total_cost | intcomma }}</strong>
+                </p>
+                <p>
+                    <em>Shipping & taxes calculated at checkout.</em>
+                </p>
+                <button type="submit">
+                    <i class="fas fa-shopping-bag"> </i> CHECKOUT
+                </button>
             </div>
-            <div class="cart-total">
-                <span>Total: </span>
-                $ {% widthratio cart_item.jewelry.price 1 cart_item.order_quantity as total %} {{ total | intcomma }}
-            </div>
-        </li>
-        <hr />
-        {% endfor %} {% else %}
-        <p>NO ITEMS IN CART</p>
-        {% endif %}
-    </ul>
-    <form id="cart-checkout-section" action="{% url 'checkout' %}" method="get">
-        <div>
-            <label>Add Order Note</label>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
-        </div>
-        <div>
-            <p><span>SUBTOTAL:</span><strong>$ {{ total_cost | intcomma }}</strong></p>
-            <p><em>Shipping & taxes calculated at checkout.</em></p>
-            <button type="submit"><i class="fas fa-shopping-bag"> </i> CHECKOUT</button>
-        </div>
-    </form>
-</main>
-
-{% include 'partials/footer.html' %}
-<script src="{% static 'js/header.js' %}"></script>
-<script src="{% static 'js/cart.js' %}"></script>
-<!-- #### -->
+        </form>
+    </main>
+    {% include 'partials/footer.html' %}
+    <script src="{% static 'js/header.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}
