@@ -8,3 +8,4 @@ seed.py
 fixture.json
 media
 /.vscode
+.vercel
